@@ -1,0 +1,58 @@
+require:
+  - rubocop-rspec
+
+inherit_gem:
+  relaxed-rubocop: .rubocop.yml
+
+Style/FrozenStringLiteralComment:
+  Description: Useless in ruby > 2.3
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+Metrics/BlockLength:
+  Description: Length is an unreliable metric.
+  Enabled: false
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Description: Similar to prettier's config.
+  Enabled: false
+
+Layout/IndentFirstArgument:
+  Description: Useless indentation is useless.
+  Enabled: false
+
+Layout/IndentFirstArrayElement:
+  Description: Useless indentation is useless.
+  Enabled: false
+
+Layout/IndentFirstHashElement:
+  Description: Useless indentation is useless.
+  Enabled: false
+
+Layout/IndentFirstParameter:
+  Description: Useless indentation is useless.
+  Enabled: false
+
+RSpec/NamedSubject:
+  Description: No justification to why this is better.
+  Enabled: false
+
+RSpec/ExampleLength:
+  Description: Exemple length is an unreliable metric.
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Description: Exemple count is an unreliable metric.
+  Enabled: false
+
+RSpec/MessageSpies:
+  Description: Induces unnecessary repetition in the expectation
+  Enabled: false
+
+AllCops:
+  Exclude:
+    - bin/bundle
+    - bin/rake
+    - bin/rails
