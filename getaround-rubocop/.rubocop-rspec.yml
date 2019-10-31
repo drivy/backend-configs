@@ -1,0 +1,18 @@
+inherit_gem:
+  relaxed-rubocop: .rubocop.yml
+
+RSpec/NamedSubject:
+  Description: No justification to why this is better.
+  Enabled: false
+
+RSpec/ExampleLength:
+  Description: Exemple length is an unreliable metric.
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Description: Exemple count is an unreliable metric.
+  Enabled: false
+
+RSpec/MessageSpies:
+  Description: Induces unnecessary repetition in the expectation
+  Enabled: false

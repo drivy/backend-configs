@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
-  gem.name          = "getaround-backend-configs"
-  gem.version       = "1.0"
+  gem.name          = "getaround-rubocop"
+  gem.version       = File.read('./VERSION')
   gem.summary       = "Backend configuration files"
   gem.description   = "Shared base configuration for Getaround Backend Applications."
   gem.authors       = ["Drivy", "Laurent Humez"]
@@ -10,7 +10,6 @@ Gem::Specification.new do |gem|
 
   gem.files         = Dir["{**/}{.*,*}"].select{ |path| File.file?(path) && path !~ /^(?:tmp)/ }
 
-  gem.add_runtime_dependency "relaxed-rubocop", "~> 2.4"
-  gem.add_runtime_dependency "rubocop-performances", "~> 1.5.0"
-  gem.add_runtime_dependency "rubocop-rspec", "~> 1.36.0"
+  gem.add_runtime_dependency "relaxed-rubocop", '~> 2.4', '>= 2.4.0'
+  gem.add_runtime_dependency "rubocop", '~> 0.75', '>= 0.75.0'
 end

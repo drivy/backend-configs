@@ -1,6 +1,3 @@
-require:
-  - rubocop-rspec
-
 inherit_gem:
   relaxed-rubocop: .rubocop.yml
 
@@ -34,25 +31,3 @@ Layout/IndentFirstHashElement:
 Layout/IndentFirstParameter:
   Description: Useless indentation is useless.
   Enabled: false
-
-RSpec/NamedSubject:
-  Description: No justification to why this is better.
-  Enabled: false
-
-RSpec/ExampleLength:
-  Description: Exemple length is an unreliable metric.
-  Enabled: false
-
-RSpec/MultipleExpectations:
-  Description: Exemple count is an unreliable metric.
-  Enabled: false
-
-RSpec/MessageSpies:
-  Description: Induces unnecessary repetition in the expectation
-  Enabled: false
-
-AllCops:
-  Exclude:
-    - bin/bundle
-    - bin/rake
-    - bin/rails
