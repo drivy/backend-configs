@@ -1,3 +1,6 @@
+.bundle
+tmp
+log
 .DS_Store
 build/*.gem
 

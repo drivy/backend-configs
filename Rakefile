@@ -2,6 +2,7 @@
 
 GEM_NAMES = %w(
   getaround-rubocop
+  getaround-utils
 )
 
 root = File.expand_path(__dir__)

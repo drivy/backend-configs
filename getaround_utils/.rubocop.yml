@@ -1,0 +1,7 @@
+require:
+  - rubocop-rspec
+
+inherit_gem:
+  getaround-rubocop:
+    - .rubocop.yml
+    - .rubocop-rspec.yml
