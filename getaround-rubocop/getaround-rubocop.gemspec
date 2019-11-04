@@ -8,7 +8,9 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/drivy"
   gem.license       = "MIT"
 
-  gem.files         = Dir["{**/}{.*,*}"].select{ |path| File.file?(path) && path !~ /^(?:tmp)/ }
+  gem.files         = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
+  end
 
   gem.add_runtime_dependency "relaxed-rubocop", '~> 2.4', '>= 2.4.0'
   gem.add_runtime_dependency "rubocop", '~> 0.75', '>= 0.75.0'
