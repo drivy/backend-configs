@@ -24,7 +24,7 @@ inherit_gem:
 In your `.rubocop.yml`:
 
 ```
-require_gem
+require:
   - rubocop-rspec
 
 inherit_gem:
