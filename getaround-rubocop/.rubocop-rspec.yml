@@ -1,5 +1,5 @@
-inherit_gem:
-  relaxed-rubocop: .rubocop.yml
+require:
+  - rubocop-rspec
 
 RSpec/NamedSubject:
   Description: No justification to why this is better.

@@ -1,0 +1,63 @@
+version: 2
+jobs:
+
+  test-getaround-rubucop:
+    docker:
+      - image: circleci/ruby:2.6.4-stretch
+    working_directory: /tmp/build/getaround-rubocop
+    steps:
+      - checkout:
+          path: /tmp/build
+      - run:
+          name: Install dependencies (bundler)
+          command: |
+            gem install bundler
+            bundle install
+      - run:
+          name: Run rubocop with vanilla config
+          command: |
+            bundle exec rubocop \
+              --config .rubocop.yml .empty \
+              -o /dev/null 2>&1 | tee stderr \
+              && [ ! -s stderr ]
+      - run:
+          name: Run rubocop with rspec config
+          command: |
+            bundle exec rubocop \
+              --config .rubocop-rspec.yml .empty \
+              -o /dev/null 2>&1 | tee stderr \
+              && [ ! -s stderr ]
+      - run:
+          name: Build gem
+          command: gem build getaround-rubocop
+
+  test-getaround_utils:
+    docker:
+      - image: circleci/ruby:2.6.4-stretch
+    working_directory: /tmp/build/getaround_utils
+    steps:
+      - checkout:
+          path: /tmp/build
+      - run:
+          name: Install dependencies (bundler)
+          command: |
+            gem install bundler
+            bundle install
+      - run:
+          name: Lint (rubocop)
+          command: bundle exec rubocop
+      - run:
+          name: Test (RSpec)
+          command: bundle exec rspec
+      - run:
+          name: Build gem
+          command: gem build getaround_utils
+
+
+workflows:
+  version: 2
+
+  test-and-deploy:
+    jobs:
+      - test-getaround-rubucop
+      - test-getaround_utils
