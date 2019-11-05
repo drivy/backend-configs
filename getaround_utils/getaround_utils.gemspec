@@ -1,6 +1,8 @@
+require_relative './lib/getaround_utils/version'
+
 Gem::Specification.new do |gem|
   gem.name          = 'getaround_utils'
-  gem.version       = File.read('./VERSION')
+  gem.version       = GetaroundUtils::VERSION
   gem.summary       = 'Backend shared utility classes'
   gem.description   = 'Shared base utiliry classes for Getaround Backend Applications.'
   gem.authors       = ['Drivy', 'Laurent Humez']

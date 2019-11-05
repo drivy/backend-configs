@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name          = "getaround-rubocop"
-  gem.version       = File.read('./VERSION')
+  gem.version       = '0.1.0'
   gem.summary       = "Backend configuration files"
   gem.description   = "Shared base configuration for Getaround Backend Applications."
   gem.authors       = ["Drivy", "Laurent Humez"]
