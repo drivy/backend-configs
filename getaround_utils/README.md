@@ -6,12 +6,23 @@ Backend shared utility classes
 
 ### `GetaroundUtils::Railties::Lograge`
 
-To enable lograge (http logs) with the default, just add to your `config/application.rb`
+Enables lograge (http logs) with favored default.
 ```
+# config/application.rb
 require 'getaround_utils/railties/lograge'
 ```
 
 For more details, [read the spec](getaround_utils/spec/getaround_utils/railties/lograge_spec.rb)
+
+### `GetaroundUtils::Railties::KeyValueLogTags`
+
+Enables parse-able key-value tags in ActiveRecord::TaggedLogger
+```
+# config/application.rb
+require 'getaround_utils/railties/key_value_log_tags'
+```
+
+For more details, [read the spec](getaround_utils/spec/getaround_utils/railties/key_value_log_tags.rb)
 
 ## Misc
 
