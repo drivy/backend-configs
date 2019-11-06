@@ -12,7 +12,7 @@ Enables lograge (http logs) with favored default.
 require 'getaround_utils/railties/lograge'
 ```
 
-For more details, [read the spec](getaround_utils/spec/getaround_utils/railties/lograge_spec.rb)
+For more details, [read the spec](spec/getaround_utils/railties/lograge_spec.rb)
 
 ### `GetaroundUtils::Railties::KeyValueLogTags`
 
@@ -22,7 +22,7 @@ Enables parse-able key-value tags in ActiveRecord::TaggedLogger
 require 'getaround_utils/railties/key_value_log_tags'
 ```
 
-For more details, [read the spec](getaround_utils/spec/getaround_utils/railties/key_value_log_tags.rb)
+For more details, [read the spec](spec/getaround_utils/railties/key_value_log_tags.rb)
 
 ## Misc
 
@@ -31,6 +31,6 @@ For more details, [read the spec](getaround_utils/spec/getaround_utils/railties/
 This log formatter will serialize an object of any depth into a key-value string.
 It supports basic scalars (ie: `Hash`,`Array`,`Numeric`,`String`) and will call "#inspect" for any other type.
 
-For more details, [read the spec](getaround_utils/spec/getaround_utils/log_formatters/deep_key_value_spec.rb)
+For more details, [read the spec](spec/getaround_utils/log_formatters/deep_key_value_spec.rb)
 
 
