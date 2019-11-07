@@ -5,7 +5,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'rails'
 require 'action_controller/railtie'
 require 'getaround_utils/railties/lograge'
-require 'getaround_utils/railties/key_value_log_tags'
 
 class DummyApplication < Rails::Application
   config.load_defaults 6.0
