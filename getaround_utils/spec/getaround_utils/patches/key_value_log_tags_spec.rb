@@ -1,6 +1,9 @@
 require 'rails_helper'
+require 'getaround_utils/patches/key_value_log_tags'
 
-describe GetaroundUtils::Railties::KeyValueLogTags do
+describe GetaroundUtils::Patches::KeyValueLogTags do
+  described_class.enable
+
   let(:output) { Tempfile.new }
   let(:logger) { ActiveSupport::TaggedLogging.new(Logger.new(output)) }
 
