@@ -40,13 +40,13 @@ module GetaroundUtils::LogFormatters
     end
 
     def call(severity, datetime, appname, message)
-      payload = { severity: severity, datetime: datetime, appname: appname }
+      payload = { severity: severity, timestamp: datetime, appname: appname }.compact
       if message.is_a?(Hash)
         payload.merge!(message)
       else
         payload[:message] = message.to_s
       end
-      serialize(payload)
+      "#{serialize(payload)}\n"
     end
 
     module Lograge

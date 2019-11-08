@@ -89,13 +89,19 @@ describe GetaroundUtils::LogFormatters::DeepKeyValue do
 
     it 'works with hash' do
       expect(output).to receive(:write)
-        .with(/severity="INFO" datetime="[^"]+" appname="" message="string"/)
+        .with(/^severity="INFO" timestamp="[^"]+" message="string"\n$/)
       logger.info('string')
+    end
+
+    it 'works with progname' do
+      expect(output).to receive(:write)
+        .with(/^severity="INFO" timestamp="[^"]+" appname="dummy" message="string"\n$/)
+      logger.info('dummy') { 'string' }
     end
 
     it 'works with Hashes' do
       expect(output).to receive(:write)
-        .with(/severity="INFO" datetime="[^"]+" appname="" key="value" message="string"/)
+        .with(/^severity="INFO" timestamp="[^"]+" key="value" message="string"\n$/)
       logger.info(key: 'value', message: 'string')
     end
   end
