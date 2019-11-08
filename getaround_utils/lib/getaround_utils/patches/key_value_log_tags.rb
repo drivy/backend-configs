@@ -7,7 +7,7 @@ module GetaroundUtils::Patches; end
 class GetaroundUtils::Patches::KeyValueLogTags
   module TaggedLoggingFormatter
     def tags_text
-      @tags_text ||= "#{current_tags.join(' ')} " if current_tags.any?
+      "#{current_tags.join(' ')} " if current_tags.any?
     end
   end
 
