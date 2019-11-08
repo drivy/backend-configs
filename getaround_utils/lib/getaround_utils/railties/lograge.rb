@@ -26,7 +26,7 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
   end
 
   config.lograge.enabled = true
-  config.lograge.formatter = GetaroundUtils::LogFormatters::DeepKeyValue.new
+  config.lograge.formatter = GetaroundUtils::LogFormatters::DeepKeyValue.for_lograge
   config.lograge.custom_options = lambda do |event|
     event.payload[:lograge].compact
   end

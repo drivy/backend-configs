@@ -17,11 +17,11 @@ class GetaroundUtils::Patches::KeyValueLogTags
       @taggers.collect do |tag|
         case tag
         when Proc
-          @kv_formatter.call(tag.call(request))
+          @kv_formatter.serialize(tag.call(request))
         when Symbol
-          @kv_formatter.call(tag => request.send(tag))
+          @kv_formatter.serialize(tag => request.send(tag))
         else
-          @kv_formatter.call(tag => tag)
+          @kv_formatter.serialize(tag => tag)
         end
       end
     end
