@@ -92,13 +92,6 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
       get(:dummy)
     end
 
-    xit 'logs the request id when available' do
-      expect(Rails.logger).to receive(:info).with(/request_id="abcdef123"/)
-      allow(request.env).to receive(:[]).and_call_original
-      allow(request.env).to receive(:[]).with('action_dispatch.request_id').and_return('abcdef123')
-      get(:dummy)
-    end
-
     it 'logs the referer when available' do
       expect(Rails.logger).to receive(:info).with(/referer="previous.com"/)
       request.headers['HTTP_REFERER'] = 'previous.com'

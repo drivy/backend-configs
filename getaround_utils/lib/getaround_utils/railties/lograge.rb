@@ -13,7 +13,6 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
       payload[:lograge][:host] = request.host
       payload[:lograge][:params] = request.filtered_parameters.except(:action, :controller)
       payload[:lograge][:remote_ip] = request.remote_ip
-      payload[:lograge][:request_id] = request.uuid
       payload[:lograge][:user_agent] = request.user_agent
       payload[:lograge][:referer] = request.referer
       payload[:lograge][:controller_action] = "#{params[:controller]}##{params[:action]}" if params
