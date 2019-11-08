@@ -14,6 +14,31 @@ require 'getaround_utils/railties/lograge'
 
 For more details, [read the spec](spec/getaround_utils/railties/lograge_spec.rb)
 
+## Mixins
+
+### GetaroundUtils::Mixins::Loggable
+
+Enables lograge (http logs) with favored default.
+```
+class MyClass
+  include Getaround::Mixins::Loggable
+
+  def append_infos_to_loggable(payload)
+    payload[:static] = 'value'
+  end
+
+  def action
+    loggable(:info, dynamic: 'value')
+  end
+end
+
+MyClass.new.action # :info { origin: 'MyClass', static: 'value', dynamic: 'value' }
+
+```
+
+For more details, [read the spec](spec/getaround_utils/mixins/loggable.rb)
+
+
 ## Patches
 
 ### GetaroundUtils::Patches::KeyValueLogTags
