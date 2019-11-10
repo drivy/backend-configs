@@ -39,24 +39,36 @@ module GetaroundUtils::LogFormatters
       result
     end
 
-    def call(severity, datetime, appname, message)
-      payload = { severity: severity, timestamp: datetime, appname: appname }.compact
+    def call(severity, _datetime, appname, message)
+      payload = { severity: severity, appname: appname }
       if message.is_a?(Hash)
-        payload.merge!(message)
+        "#{serialize(payload.merge(message).compact)}\n"
       else
-        payload[:message] = message.to_s
+        "#{serialize(payload.merge(message: message.to_s).compact)}\n"
       end
-      "#{serialize(payload)}\n"
     end
 
     module Lograge
       def call(data)
+        data.compact! if data.is_a?(Hash)
         serialize(data)
       end
     end
 
     def self.for_lograge
       new.extend(Lograge)
+    end
+
+    module Sidekiq
+      def call(severity, datetime, appname, message)
+        payload = { tid: Thread.current['sidekiq_tid'] }
+        payload.merge!(Thread.current[:sidekiq_context] || {})
+        "#{super.strip} #{serialize(sidekiq: payload.compact)}\n"
+      end
+    end
+
+    def self.for_sidekiq
+      new.extend(Sidekiq)
     end
   end
 end

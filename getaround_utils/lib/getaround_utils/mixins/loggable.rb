@@ -27,6 +27,7 @@ module GetaroundUtils::Mixins::Loggable
   def loggable(severity, payload)
     extra_infos = {}
     base_append_infos_to_loggable(extra_infos)
-    base_loggable_logger.send(severity.to_sym, payload.merge(extra_infos))
+    payload = payload.merge(extra_infos).compact
+    base_loggable_logger.send(severity.to_sym, payload)
   end
 end
