@@ -1,5 +1,4 @@
-require 'rails_helper'
-require 'getaround_utils/patches/key_value_log_tags'
+require 'spec_helper'
 
 describe GetaroundUtils::Patches::KeyValueLogTags do
   before do

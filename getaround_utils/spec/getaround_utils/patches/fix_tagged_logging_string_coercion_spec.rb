@@ -1,5 +1,4 @@
-require 'rails_helper'
-require 'getaround_utils/patches/fix_tagged_logging_string_coercion'
+require 'spec_helper'
 
 describe GetaroundUtils::Patches::FixTaggedLoggingStringCoercion do
   before do
@@ -22,7 +21,7 @@ describe GetaroundUtils::Patches::FixTaggedLoggingStringCoercion do
     logger.tagged(['tag01', 'tag02']) { |logger| logger.error('string02') }
   end
 
-  it 'delegates the formating to the logger formatter' do
+  it 'delegates formating to the logger formatter' do
     base_logger = Logger.new(output)
     base_logger.formatter = ->(_a, _b, _c, d) { "#{d.class}|\n" }
     logger = ActiveSupport::TaggedLogging.new(base_logger)

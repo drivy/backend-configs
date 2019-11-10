@@ -63,7 +63,7 @@ module GetaroundUtils::LogFormatters
       def call(severity, datetime, appname, message)
         payload = { tid: Thread.current['sidekiq_tid'] }
         payload.merge!(Thread.current[:sidekiq_context] || {})
-        "#{super.strip} #{serialize(sidekiq: payload.compact)}\n"
+        "#{super.chomp} #{serialize(sidekiq: payload.compact)}\n"
       end
     end
 
