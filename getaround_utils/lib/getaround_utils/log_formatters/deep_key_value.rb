@@ -15,7 +15,7 @@ class GetaroundUtils::LogFormatters::DeepKeyValue < GetaroundUtils::Utils::DeepK
     if message.is_a?(Hash)
       "#{serialize(payload.merge(message).compact)}\n"
     else
-      "#{serialize(payload.merge(message: message.to_s).compact)}\n"
+      "#{serialize(payload.compact)} #{message}\n"
     end
   end
 
@@ -36,10 +36,16 @@ class GetaroundUtils::LogFormatters::DeepKeyValue < GetaroundUtils::Utils::DeepK
   end
 
   module Sidekiq
-    def call(severity, datetime, appname, message)
-      payload = { tid: Thread.current['sidekiq_tid'] }
-      payload.merge!(Thread.current[:sidekiq_context] || {})
-      "#{super.chomp} #{serialize(sidekiq: payload.compact)}\n"
+    def call(severity, _datetime, appname, message)
+      payload = {}
+      payload[:sidekiq] = Thread.current[:sidekiq_context] || {}
+      payload[:sidekiq][:tid] = Thread.current['sidekiq_tid']
+      message = if message.is_a?(Hash)
+        message.merge(payload.compact)
+      else
+        "#{serialize(payload.compact)} #{message}"
+      end
+      super
     end
   end
 

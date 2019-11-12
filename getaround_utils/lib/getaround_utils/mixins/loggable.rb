@@ -24,10 +24,18 @@ module GetaroundUtils::Mixins::Loggable
     end
   end
 
-  def loggable(severity, payload)
-    extra_infos = {}
-    base_append_infos_to_loggable(extra_infos)
-    payload = payload.merge(extra_infos).compact
-    base_loggable_logger.send(severity.to_sym, payload)
+  def loggable_formatter
+    @loggable_formatter ||= GetaroundUtils::Utils::DeepKeyValueSerializer.new
+  end
+
+  def loggable(severity, message)
+    payload = {}
+    base_append_infos_to_loggable(payload)
+    message = if message.is_a?(Hash)
+      loggable_formatter.serialize(message.merge(payload).compact)
+    else
+      "#{loggable_formatter.serialize(payload)} #{message}"
+    end
+    base_loggable_logger.send(severity.to_sym, message)
   end
 end

@@ -11,7 +11,7 @@ describe GetaroundUtils::Mixins::Loggable do
     context 'with no inheritence' do
       it 'inject the class name' do
         expect(dummy_logger).to receive(:info)
-          .with(key: :value, origin: 'BaseClass')
+          .with('key="value" origin="BaseClass"')
         subject.loggable(:info, key: :value)
       end
 
@@ -23,7 +23,7 @@ describe GetaroundUtils::Mixins::Loggable do
         end
 
         expect(dummy_logger).to receive(:info)
-          .with(key: :value, origin: 'BaseClass', extra: 'dummy')
+          .with('key="value" origin="BaseClass" extra="dummy"')
         subject.loggable(:info, key: :value)
       end
     end
@@ -34,7 +34,7 @@ describe GetaroundUtils::Mixins::Loggable do
 
       it 'inject the class name' do
         expect(dummy_logger).to receive(:info)
-          .with(key: :value, origin: 'ChildClass')
+          .with('key="value" origin="ChildClass"')
         subject.loggable(:info, key: :value)
       end
 
@@ -46,7 +46,7 @@ describe GetaroundUtils::Mixins::Loggable do
         end
 
         expect(dummy_logger).to receive(:info)
-          .with(key: :value, origin: 'ChildClass', parent: 'dummy')
+          .with('key="value" origin="ChildClass" parent="dummy"')
         subject.loggable(:info, key: :value)
       end
 
@@ -64,7 +64,7 @@ describe GetaroundUtils::Mixins::Loggable do
         end
 
         expect(dummy_logger).to receive(:info)
-          .with(key: :value, origin: 'ChildClass', parent: 'dummy', child: 'dummy')
+          .with('key="value" origin="ChildClass" parent="dummy" child="dummy"')
         subject.loggable(:info, key: :value)
       end
     end

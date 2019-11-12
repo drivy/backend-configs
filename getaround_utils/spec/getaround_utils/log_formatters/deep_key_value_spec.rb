@@ -17,7 +17,7 @@ describe GetaroundUtils::LogFormatters::DeepKeyValue do
       Thread.current['sidekiq_tid'] = 'whatever'
       Thread.current[:sidekiq_context] = { key: :value }
       expect(formatter.call(:info, nil, 'dummy', 'string'))
-        .to match(/^severity="info" appname="dummy" message="string" sidekiq.tid="whatever" sidekiq.key="value"\n$/)
+        .to eq(%{severity="info" appname="dummy" sidekiq.key="value" sidekiq.tid="whatever" string\n})
     end
 
     it 'return a formatter variant that appends sidekiq context to hash messages' do
@@ -26,7 +26,7 @@ describe GetaroundUtils::LogFormatters::DeepKeyValue do
       Thread.current['sidekiq_tid'] = 'whatever'
       Thread.current[:sidekiq_context] = { key: :value }
       expect(formatter.call(:info, nil, 'dummy', key: :value ))
-        .to match(/^severity="info" appname="dummy" key="value" sidekiq.tid="whatever" sidekiq.key="value"\n$/)
+        .to eq(%{severity="info" appname="dummy" key="value" sidekiq.key="value" sidekiq.tid="whatever"\n})
     end
   end
 
@@ -43,20 +43,20 @@ describe GetaroundUtils::LogFormatters::DeepKeyValue do
 
     it 'works with hash' do
       expect(output).to receive(:write)
-        .with(/^severity="INFO" message="string"\n$/)
+        .with(%{severity="INFO" string\n})
       logger.info('string')
     end
 
     it 'works with progname' do
       expect(output).to receive(:write)
-        .with(/^severity="INFO" appname="dummy" message="string"\n$/)
+        .with(%{severity="INFO" appname="dummy" string\n})
       logger.info('dummy') { 'string' }
     end
 
     it 'works with Hashes' do
       expect(output).to receive(:write)
-        .with(/^severity="INFO" key="value" message="string"\n$/)
-      logger.info(key: 'value', message: 'string')
+        .with(%{severity="INFO" key="value"\n})
+      logger.info(key: 'value')
     end
   end
 end
