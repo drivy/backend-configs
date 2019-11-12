@@ -5,3 +5,15 @@ inherit_gem:
   getaround-rubocop:
     - .rubocop.yml
     - .rubocop-rspec.yml
+
+Layout/MultilineAssignmentLayout:
+  Description: Vertical alignment results in awkward diffs.
+  EnforcedStyle: same_line
+
+Layout/ElseAlignment:
+  Description: Vertical alignment results in awkward diffs.
+  Enabled: false
+
+Layout/EndAlignment:
+  Description: Vertical alignment results in awkward diffs.
+  EnforcedStyleAlignWith: start_of_line
