@@ -2,6 +2,17 @@ require 'rails/railtie'
 module GetaroundUtils; end
 module GetaroundUtils::Patches; end
 
+##
+# Fixes the ActiveSupport::TaggedLogging::Formatter string coercion
+#
+# Ruby Logger and child classes don't necessarilly expect message to be string.
+# In theory, they should preserve the message value intact until it is passed to the formatter.
+#
+# ActiveSupport::TaggedLogging breaks this by injecting the tags via string concatenation,
+# which coerces messages of any type into String.
+# This patches works around this by instead appending the tags to the result of the
+# original formatter result, which is garanteed to be a string
+
 class GetaroundUtils::Patches::FixTaggedLoggingStringCoercion
   module TaggedLoggingFormatter
     def fixed_tags_text

@@ -38,7 +38,7 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
       allow(middleware).to receive(:logger).and_return(logger)
 
       expect(output).to receive(:write)
-        .with("tag01=\"tag01\" something\n")
+        .with("\"tag01\" something\n")
       middleware.call(Rack::MockRequest.env_for("http://test.com"))
     end
 
