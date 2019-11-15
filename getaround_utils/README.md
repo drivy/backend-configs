@@ -28,11 +28,11 @@ class MyClass
   end
 
   def action
-    loggable(:info, dynamic: 'value')
+    loggable(:info, 'hello', dynamic: 'value')
   end
 end
 
-MyClass.new.action # :info { origin: 'MyClass', static: 'value', dynamic: 'value' }
+MyClass.new.action # :info message="hello" origin="MyClass" static="value" dynamic="value"
 
 ```
 

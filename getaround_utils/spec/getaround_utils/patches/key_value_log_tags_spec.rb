@@ -38,7 +38,7 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
       allow(middleware).to receive(:logger).and_return(logger)
 
       expect(output).to receive(:write)
-        .with("\"tag01\" something\n")
+        .with(%{"tag01" something\n})
       middleware.call(Rack::MockRequest.env_for("http://test.com"))
     end
 
@@ -47,7 +47,7 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
       allow(middleware).to receive(:logger).and_return(logger)
 
       expect(output).to receive(:write)
-        .with("host=\"test.com\" something\n")
+        .with(%{host="test.com" something\n})
       middleware.call(Rack::MockRequest.env_for("http://test.com"))
     end
 
@@ -56,7 +56,7 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
       allow(middleware).to receive(:logger).and_return(logger)
 
       expect(output).to receive(:write)
-        .with("key=\"value\" something\n")
+        .with(%{key="value" something\n})
       middleware.call(Rack::MockRequest.env_for("http://test.com"))
     end
   end
