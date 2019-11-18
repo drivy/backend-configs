@@ -52,6 +52,19 @@ GetaroundUtils::Patches::KeyValueLogTags.enable
 
 For more details, [read the spec](spec/getaround_utils/patches/key_value_log_tags_spec.rb)
 
+
+### GetaroundUtils::Patches::KeyValueSidekiqExceptions
+
+Enables parse-able exception logging from Sidekiq
+```
+# config/application.rb
+require 'getaround_utils/patches/key_value_sidekiq_exceptions'
+GetaroundUtils::Patches::KeyValueSidekiqExceptions.enable
+```
+
+For more details, [read the spec](spec/getaround_utils/patches/key_value_sidekiq_exceptions_spec.rb)
+
+
 ## Misc
 
 ### GetaroundUtils::LogFormatters::DeepKeyValue
