@@ -10,26 +10,27 @@ require 'getaround_utils/utils/deep_key_value_serializer'
 # It will attempt to serialize message it is a string otherwise adding it as message=value
 
 class GetaroundUtils::LogFormatters::DeepKeyValue < GetaroundUtils::Utils::DeepKeyValueSerializer
+  def normalize(message)
+    if message.is_a?(Hash)
+      serialize(message.compact)
+    elsif message.is_a?(String) && message.match(/^[^ =]+=/)
+      message
+    else
+      serialize(message: message.to_s)
+    end
+  end
+
   def call(severity, _datetime, appname, message)
     payload = { severity: severity, appname: appname }
-    if message.is_a?(Hash)
-      "#{serialize(payload.merge(message).compact)}\n"
-    else
-      "#{serialize(payload.compact)} #{message}\n"
-    end
+    "#{normalize(payload)} #{normalize(message)}\n"
   end
 
   module Lograge
-    def call(data)
-      data.compact! if data.is_a?(Hash)
-      serialize(data)
+    def call(message)
+      message = message.compact if message.is_a?(Hash)
+      serialize(message)
     end
   end
-
-  ##
-  # Return a lograge-style LogFormatter
-  #
-  # This formatter will only take one argument and serialize it
 
   def self.for_lograge
     new.extend(Lograge)
@@ -37,23 +38,12 @@ class GetaroundUtils::LogFormatters::DeepKeyValue < GetaroundUtils::Utils::DeepK
 
   module Sidekiq
     def call(severity, _datetime, appname, message)
-      payload = {}
-      payload[:sidekiq] = Thread.current[:sidekiq_context] || {}
-      payload[:sidekiq][:tid] = Thread.current['sidekiq_tid']
-      message = if message.is_a?(Hash)
-        message.merge(payload.compact)
-      else
-        "#{serialize(payload.compact)} #{message}"
-      end
-      super
+      payload = { severity: severity, appname: appname }
+      sidekiq = { sidekiq: Thread.current[:sidekiq_context] || {} }
+      sidekiq[:sidekiq][:tid] = Thread.current['sidekiq_tid']
+      "#{normalize(payload)} #{normalize(message)} #{normalize(sidekiq)}\n"
     end
   end
-
-  ##
-  # Return a sidekiq-style LogFormatter
-  #
-  # This formatter replicates the default Sidekiq LogFormatter behavior of merging context
-  # values from the current Thread's store
 
   def self.for_sidekiq
     new.extend(Sidekiq)
