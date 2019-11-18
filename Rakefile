@@ -42,7 +42,7 @@ namespace :gem do
     GEM_NAMES.each do |gem_name|
       desc "Cleanup the #{gem_name} gem artifacts"
       task gem_name do
-        sh "rm #{build_path}/#{gem_name}-*.gem"
+        sh "rm -f #{build_path}/#{gem_name}-*.gem"
       end
     end
 
