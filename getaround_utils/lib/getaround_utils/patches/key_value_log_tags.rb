@@ -1,4 +1,3 @@
-require 'rails/railtie'
 require 'getaround_utils/utils/deep_key_value_serializer'
 
 module GetaroundUtils; end
