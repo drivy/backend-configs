@@ -16,13 +16,13 @@ describe GetaroundUtils::LogFormatters::DeepKeyValue do
 
     it 'return a formatter variant that appends sidekiq context to string message' do
       expect(formatter.call(:info, nil, 'dummy', 'string'))
-        .to match(%r{^severity="info" appname="dummy" message="string" sidekiq.tid="[a-z0-9]{9}"\n$}m)
+        .to match(/^severity="info" appname="dummy" message="string" sidekiq.tid="[a-z0-9]{9}"\n$/m)
     end
 
     it 'return a formatter variant that appends sidekiq context to string formatted message' do
       Thread.current[:sidekiq_context] = { key: :value1 }
       expect(formatter.call(:info, nil, 'dummy', 'key="value"'))
-        .to match(%r{^severity="info" appname="dummy" key="value" sidekiq.key="value1" sidekiq.tid="[a-z0-9]{9}"\n$}m)
+        .to match(/^severity="info" appname="dummy" key="value" sidekiq.key="value1" sidekiq.tid="[a-z0-9]{9}"\n$/m)
     ensure
       Thread.current[:sidekiq_context] = nil
     end
@@ -30,7 +30,7 @@ describe GetaroundUtils::LogFormatters::DeepKeyValue do
     it 'return a formatter variant that appends sidekiq context to hash messages' do
       Thread.current[:sidekiq_context] = { key: :value2 }
       expect(formatter.call(:info, nil, 'dummy', key: :value ))
-        .to match(%r{^severity="info" appname="dummy" key="value" sidekiq.key="value2" sidekiq.tid="[a-z0-9]{9}"\n$}m)
+        .to match(/^severity="info" appname="dummy" key="value" sidekiq.key="value2" sidekiq.tid="[a-z0-9]{9}"\n$/m)
     ensure
       Thread.current[:sidekiq_context] = nil
     end
