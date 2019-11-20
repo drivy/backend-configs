@@ -3,12 +3,6 @@ module GetaroundUtils::LogFormatters; end
 
 require 'getaround_utils/utils/deep_key_value_serializer'
 
-##
-# Format logs using key=value notation
-#
-# This logger leverage the fact that ruby Logger does not especially expect message to be string
-# It will attempt to serialize message it is a string otherwise adding it as message=value
-
 class GetaroundUtils::LogFormatters::DeepKeyValue < GetaroundUtils::Utils::DeepKeyValueSerializer
   def normalize(message)
     if message.is_a?(Hash)
@@ -37,11 +31,19 @@ class GetaroundUtils::LogFormatters::DeepKeyValue < GetaroundUtils::Utils::DeepK
   end
 
   module Sidekiq
+    def sidekiq_context
+      context = Thread.current&.fetch(:sidekiq_context)
+      context.is_a?(Hash) ? context : {}
+    end
+
+    def sidekiq_tid
+      Thread.current&.fetch('sidekiq_tid', nil) || (Thread.current&.object_id ^ ::Process.pid).to_s(36)
+    end
+
     def call(severity, _datetime, appname, message)
       payload = { severity: severity, appname: appname }
-      sidekiq = { sidekiq: Thread.current[:sidekiq_context] || {} }
-      sidekiq[:sidekiq][:tid] = Thread.current['sidekiq_tid']
-      "#{normalize(payload)} #{normalize(message)} #{normalize(sidekiq)}\n"
+      sidekiq = sidekiq_context.merge(tid: sidekiq_tid).compact
+      "#{normalize(payload)} #{normalize(message)} #{normalize(sidekiq: sidekiq)}\n"
     end
   end
 

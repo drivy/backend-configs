@@ -15,14 +15,16 @@ describe GetaroundUtils::Patches::KeyValueSidekiqExceptions do
       ex.set_backtrace(['/file/dummy:0 in `block in call', '/file/dummy:1 in `block in call'])
 
       expect(Sidekiq.logger).to receive(:warn)
-        .with(%{exception="StandardError" message="Dummy" backtrace="/file/dummy:0 in `block in call\\n/file/dummy:1 in `block in call"})
+        .with(%{message="Dummy" exception="StandardError" backtrace="/file/dummy:0 in `block in call\\n/file/dummy:1 in `block in call"})
       logger.call(ex, {})
     end
 
     it 'logs the passed context' do
+      ex = StandardError.new('Dummy')
+
       expect(Sidekiq.logger).to receive(:warn)
-        .with(%{sidekiq.key="value"})
-      logger.call(nil, key: :value)
+        .with(%{message="Dummy" exception="StandardError" sidekiq.key="value"})
+      logger.call(ex, key: :value)
     end
   end
 end

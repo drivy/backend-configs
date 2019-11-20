@@ -12,10 +12,10 @@ class GetaroundUtils::Patches::KeyValueSidekiqExceptions
 
     def call(exception, ctx)
       payload = {}
-      payload[:exception] = exception&.class&.name
+      payload[:message] = exception.message
+      payload[:exception] = exception.class.name
+      payload[:backtrace] = exception.backtrace&.join("\n")
       payload[:sidekiq] = ctx
-      payload[:message] = exception&.message
-      payload[:backtrace] = exception&.backtrace&.join("\n")
       Sidekiq.logger.warn(kv_formatter.serialize(payload.compact))
     end
   end
