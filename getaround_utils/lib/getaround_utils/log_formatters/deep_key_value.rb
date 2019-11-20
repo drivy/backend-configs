@@ -32,7 +32,7 @@ class GetaroundUtils::LogFormatters::DeepKeyValue < GetaroundUtils::Utils::DeepK
 
   module Sidekiq
     def sidekiq_context
-      context = Thread.current&.fetch(:sidekiq_context)
+      context = Thread.current&.fetch(:sidekiq_context, nil)
       context.is_a?(Hash) ? context : {}
     end
 

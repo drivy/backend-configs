@@ -2,8 +2,9 @@ require "spec_helper"
 
 describe GetaroundUtils::LogFormatters::DeepKeyValue do
   describe '.for_lograge' do
+    let(:formatter) { described_class.for_lograge }
+
     it 'return a formatter variant that only takes one parametter' do
-      formatter = described_class.for_lograge
       expect(formatter.call('string')).to eq('"string"')
       expect(formatter.call(['a'])).to eq('0="a"')
       expect(formatter.call(key: :value)).to eq('key="value"')
@@ -11,40 +12,33 @@ describe GetaroundUtils::LogFormatters::DeepKeyValue do
   end
 
   describe '.for_sidekiq' do
-    it 'return a formatter variant that appends sidekiq context to string message' do
-      formatter = described_class.for_sidekiq
+    let(:formatter) { described_class.for_sidekiq }
 
-      Thread.current['sidekiq_tid'] = 'whatever'
-      Thread.current[:sidekiq_context] = { key: :value }
+    it 'return a formatter variant that appends sidekiq context to string message' do
       expect(formatter.call(:info, nil, 'dummy', 'string'))
-        .to eq(%{severity="info" appname="dummy" message="string" sidekiq.key="value" sidekiq.tid="whatever"\n})
+        .to match(%r{^severity="info" appname="dummy" message="string" sidekiq.tid="[a-z0-9]{9}"\n$}m)
     end
 
     it 'return a formatter variant that appends sidekiq context to string formatted message' do
-      formatter = described_class.for_sidekiq
-
-      Thread.current['sidekiq_tid'] = 'whatever'
-      Thread.current[:sidekiq_context] = { key: :value }
+      Thread.current[:sidekiq_context] = { key: :value1 }
       expect(formatter.call(:info, nil, 'dummy', 'key="value"'))
-        .to eq(%{severity="info" appname="dummy" key="value" sidekiq.key="value" sidekiq.tid="whatever"\n})
+        .to match(%r{^severity="info" appname="dummy" key="value" sidekiq.key="value1" sidekiq.tid="[a-z0-9]{9}"\n$}m)
+    ensure
+      Thread.current[:sidekiq_context] = nil
     end
 
     it 'return a formatter variant that appends sidekiq context to hash messages' do
-      formatter = described_class.for_sidekiq
-
-      Thread.current['sidekiq_tid'] = 'whatever'
-      Thread.current[:sidekiq_context] = { key: :value }
+      Thread.current[:sidekiq_context] = { key: :value2 }
       expect(formatter.call(:info, nil, 'dummy', key: :value ))
-        .to eq(%{severity="info" appname="dummy" key="value" sidekiq.key="value" sidekiq.tid="whatever"\n})
+        .to match(%r{^severity="info" appname="dummy" key="value" sidekiq.key="value2" sidekiq.tid="[a-z0-9]{9}"\n$}m)
+    ensure
+      Thread.current[:sidekiq_context] = nil
     end
   end
 
   context 'when using via a Logger' do
-    let(:output) do
-      Tempfile.new
-    end
-
-    let :logger do
+    let(:output) { Tempfile.new }
+    let(:logger) do
       logger = Logger.new(output)
       logger.formatter = subject
       logger
