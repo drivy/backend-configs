@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe GetaroundUtils::Patches::KeyValueLogTags do
   before do
@@ -17,13 +17,13 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
   describe 'ActiveSupport::TaggedLogging::Formatter' do
     it 'does nothing in the absence of tags' do
       expect(output).to receive(:write)
-        .with("string01\n")
-      logger.error('string01')
+        .with(%{message="string01"\n})
+      logger.error('message="string01"')
     end
 
     it 'insert tags without encolsing them in brackets' do
       expect(output).to receive(:write)
-        .with("tag01 tag02 string02\n")
+        .with(%{tag01 tag02 message="string02"\n})
       logger.tagged(['tag01', 'tag02']) { |logger| logger.error('string02') }
     end
   end
@@ -38,7 +38,7 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
       allow(middleware).to receive(:logger).and_return(logger)
 
       expect(output).to receive(:write)
-        .with(%{"tag01" something\n})
+        .with(%{"tag01" message="something"\n})
       middleware.call(Rack::MockRequest.env_for("http://test.com"))
     end
 
@@ -47,7 +47,7 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
       allow(middleware).to receive(:logger).and_return(logger)
 
       expect(output).to receive(:write)
-        .with(%{host="test.com" something\n})
+        .with(%{host="test.com" message="something"\n})
       middleware.call(Rack::MockRequest.env_for("http://test.com"))
     end
 
@@ -56,7 +56,7 @@ describe GetaroundUtils::Patches::KeyValueLogTags do
       allow(middleware).to receive(:logger).and_return(logger)
 
       expect(output).to receive(:write)
-        .with(%{key="value" something\n})
+        .with(%{key="value" message="something"\n})
       middleware.call(Rack::MockRequest.env_for("http://test.com"))
     end
   end

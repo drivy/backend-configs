@@ -1,4 +1,4 @@
-require 'getaround_utils/utils/deep_key_value_serializer'
+require 'getaround_utils/log_formatters/deep_key_value'
 
 module GetaroundUtils; end
 module GetaroundUtils::Patches; end
@@ -18,25 +18,29 @@ module GetaroundUtils::Patches; end
 
 class GetaroundUtils::Patches::KeyValueLogTags
   module TaggedLoggingFormatter
+    include GetaroundUtils::LogFormatters::DeepKeyValue::Shared
+
     def tags_text
       "#{current_tags.join(' ')} " if current_tags.any?
+    end
+
+    def call(severity, datetime, appname, message)
+      original_method = method(__method__).super_method.super_method
+      message = "#{tags_text}#{normalize(message)}"
+      original_method.call(severity, datetime, appname, message)
     end
   end
 
   module RackLogger
-    def kv_formatter
-      @kv_formatter ||= GetaroundUtils::Utils::DeepKeyValueSerializer.new
-    end
-
     def compute_tags(request)
       @taggers.collect do |tag|
         case tag
         when Proc
-          kv_formatter.serialize(tag.call(request))
+          GetaroundUtils::Utils::DeepKeyValue.serialize(tag.call(request))
         when Symbol
-          kv_formatter.serialize(tag => request.send(tag))
+          GetaroundUtils::Utils::DeepKeyValue.serialize(tag => request.send(tag))
         else
-          kv_formatter.serialize(tag)
+          GetaroundUtils::Utils::DeepKeyValue.serialize(tag)
         end
       end
     end
