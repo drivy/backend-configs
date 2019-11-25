@@ -1,7 +1,7 @@
 require "spec_helper"
 
-describe GetaroundUtils::Utils::DeepKeyValueSerializer do
-  let(:subject) { described_class.new(max_depth: 5, max_length: 512) }
+describe GetaroundUtils::Utils::DeepKeyValue do
+  let(:subject) { described_class }
 
   describe '.serialize' do
     context 'with numbers' do
