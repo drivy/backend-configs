@@ -15,8 +15,8 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
       payload[:lograge][:remote_ip] = request.remote_ip
       payload[:lograge][:user_agent] = request.user_agent
       payload[:lograge][:referer] = request.referer
-      payload[:lograge][:controller_action] = "#{params[:controller]}##{params[:action]}" if params
-      payload[:lograge][:session_id] = session&.id
+      payload[:lograge][:controller_action] = "#{params[:controller]}##{params[:action]}" if defined?(params)
+      payload[:lograge][:session_id] = session.is_a?(Hash) ? session[:id] : session.id if defined?(session)
       payload[:lograge][:user_id] = current_user&.id if defined?(current_user)
     end
   end
