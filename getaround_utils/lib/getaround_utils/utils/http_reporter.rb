@@ -1,5 +1,6 @@
 require 'json'
 require 'faraday'
+require 'getaround_utils/utils/async_queue'
 
 class GetaroundUtils::Utils::HttpReporter
   class AsyncQueue < GetaroundUtils::Utils::AsyncQueue
