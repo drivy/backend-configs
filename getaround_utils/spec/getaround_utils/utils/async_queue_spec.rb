@@ -77,5 +77,19 @@ describe GetaroundUtils::Utils::AsyncQueue do
       expect(dummy_class).to have_received(:loggable)
         .with('error', 'Test error', hash_including(class: 'StandardError'))
     end
+
+    it 'keeps working after rescuing an error' do
+      allow(dummy_class).to receive(:loggable)
+      allow(dummy_class).to receive(:perform)
+        .and_raise(StandardError, 'Test error')
+
+      dummy_class.perform_async(1)
+      dummy_class.perform_async(1)
+      dummy_class.perform_async(1)
+      dummy_class.terminate
+
+      expect(dummy_class).to have_received(:loggable)
+        .exactly(3).times.with('error', 'Test error', hash_including(class: 'StandardError'))
+    end
   end
 end

@@ -32,12 +32,14 @@ class GetaroundUtils::Utils::AsyncQueue
 
         @worker = Thread.new do
           while args = @queue.pop
-            perform(*args)
+            begin
+              perform(*args)
+            rescue ClosedQueueError
+              nil
+            rescue StandardError => e
+              loggable('error', e.message, class: e.class.to_s, backtrace: e.backtrace)
+            end
           end
-        rescue ClosedQueueError
-          nil
-        rescue StandardError => e
-          loggable('error', e.message, class: e.class.to_s, backtrace: e.backtrace)
         end
 
         at_exit { terminate }
