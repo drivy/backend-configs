@@ -21,7 +21,7 @@ For more details, [read the spec](spec/getaround_utils/railties/lograge_spec.rb)
 Enables lograge (http logs) with favored default.
 ```
 class MyClass
-  include Getaround::Mixins::Loggable
+  include GetaroundUtils::Mixins::Loggable
 
   def append_infos_to_loggable(payload)
     payload[:static] = 'value'
