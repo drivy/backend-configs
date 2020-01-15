@@ -36,7 +36,7 @@ MyClass.new.action # :info message="hello" origin="MyClass" static="value" dynam
 
 ```
 
-For more details, [read the spec](spec/getaround_utils/mixins/loggable.rb)
+For more details, [read the spec](spec/getaround_utils/mixins/loggable_spec.rb)
 
 
 ## Patches
