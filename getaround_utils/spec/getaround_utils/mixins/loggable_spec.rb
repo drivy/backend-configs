@@ -15,6 +15,10 @@ describe GetaroundUtils::Mixins::Loggable do
           include GetaroundUtils::Mixins::Loggable
 
           def use_loggable(*args)
+            loggable_log(*args)
+          end
+
+          def use_deprecated_loggable(*args)
             loggable(*args)
           end
         end
@@ -38,6 +42,13 @@ describe GetaroundUtils::Mixins::Loggable do
         .with('message="dummy" key="value" origin="BaseClass" extra="dummy"')
       base_class.use_loggable(:info, 'dummy', key: :value)
     end
+
+    it 'log warning calling the deprecated function name' do
+      expect(dummy_logger).to receive(:error)
+        .with('message="test" origin="BaseClass"')
+      expect(dummy_logger).to receive(:warn)
+      base_class.use_deprecated_loggable(:error, 'test')
+    end
   end
 
   context 'when included in a class' do
@@ -46,6 +57,10 @@ describe GetaroundUtils::Mixins::Loggable do
         include GetaroundUtils::Mixins::Loggable
 
         def use_loggable(*args)
+          loggable_log(*args)
+        end
+
+        def use_deprecated_loggable(*args)
           loggable(*args)
         end
       })
@@ -75,6 +90,13 @@ describe GetaroundUtils::Mixins::Loggable do
         expect(dummy_logger).to receive(:info)
           .with('message="dummy" key="value" origin="BaseClass" extra="dummy"')
         subject.use_loggable(:info, 'dummy', key: :value)
+      end
+
+      it 'log warning calling the deprecated function name' do
+        expect(dummy_logger).to receive(:info)
+          .with('message="dummy" key="value" origin="BaseClass"')
+        expect(dummy_logger).to receive(:warn)
+        subject.use_deprecated_loggable(:info, 'dummy', key: :value)
       end
     end
 
