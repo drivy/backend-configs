@@ -27,7 +27,7 @@ module GetaroundUtils::Mixins::Loggable
   def loggable(severity, message, payload = {})
     base_loggable_logger.send(
       :warn,
-      "Deprecated usagage of GetaroundUtils::Mixins::Loggable.loggable(args*). Please use GetaroundUtils::Mixins::Loggable.loggable_log(args*) instead"
+      "Deprecated usage of GetaroundUtils::Mixins::Loggable#loggable(*args). Please use GetaroundUtils::Mixins::Loggable#loggable_log(*args) instead"
     )
     loggable_log(severity, message, payload)
   end
