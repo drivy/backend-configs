@@ -25,6 +25,14 @@ module GetaroundUtils::Mixins::Loggable
   end
 
   def loggable(severity, message, payload = {})
+    base_loggable_logger.send(
+      :warn,
+      "Deprecated usagage of GetaroundUtils::Mixins::Loggable.loggable(args*). Please use GetaroundUtils::Mixins::Loggable.loggable_log(args*) instead"
+    )
+    loggable_log(severity, message, payload)
+  end
+
+  def loggable_log(severity, message, payload = {})
     payload = { message: message }.merge(payload)
     base_append_infos_to_loggable(payload)
 
