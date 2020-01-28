@@ -28,7 +28,7 @@ class MyClass
   end
 
   def action
-    loggable(:info, 'hello', dynamic: 'value')
+    loggable_log(:info, 'hello', dynamic: 'value')
   end
 end
 
