@@ -12,6 +12,7 @@ jobs:
           name: Install dependencies (bundler)
           command: |
             gem install bundler
+            bundle config set frozen true
             bundle install
       - run:
           name: Run rubocop with vanilla config
@@ -42,6 +43,7 @@ jobs:
           name: Install dependencies (bundler)
           command: |
             gem install bundler
+            bundle config set frozen true
             bundle install
       - run:
           name: Lint (rubocop)
