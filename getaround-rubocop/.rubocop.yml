@@ -1,10 +1,6 @@
 inherit_gem:
   relaxed-rubocop: .rubocop.yml
 
-Style/FrozenStringLiteralComment:
-  Description: Useless in ruby > 2.3
-  Enabled: false
-
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 
