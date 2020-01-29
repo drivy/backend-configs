@@ -27,5 +27,6 @@ In your `.rubocop.yml`:
 inherit_gem:
   getaround-rubocop:
     - .rubocop.yml
+    - .rubocop-performance.yml
     - .rubocop-rspec.yml
 ```

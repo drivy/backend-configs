@@ -1,0 +1,6 @@
+require:
+  - rubocop-performance
+
+Performance/Casecmp:
+  Description: Identifies places where a case-insensitive string comparison can better be implemented using casecmp.
+  Enabled: false
