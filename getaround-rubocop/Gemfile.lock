@@ -4,6 +4,7 @@ PATH
     getaround-rubocop (0.1.2)
       relaxed-rubocop (= 2.4)
       rubocop (= 0.75)
+      rubocop-rails (= 2.3.2)
 
 GEM
   remote: https://rubygems.org/
@@ -13,6 +14,7 @@ GEM
     parallel (1.19.1)
     parser (2.7.0.2)
       ast (~> 2.4.0)
+    rack (2.1.2)
     rainbow (3.0.0)
     relaxed-rubocop (2.4)
     rubocop (0.75.0)
@@ -22,6 +24,9 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-rails (2.3.2)
+      rack (>= 1.1)
+      rubocop (>= 0.72.0)
     rubocop-rspec (1.36.0)
       rubocop (>= 0.68.1)
     ruby-progressbar (1.10.1)
@@ -35,4 +40,4 @@ DEPENDENCIES
   rubocop-rspec (= 1.36)
 
 BUNDLED WITH
-   2.1.0
+   2.1.4

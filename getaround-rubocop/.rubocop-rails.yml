@@ -1,0 +1,27 @@
+require:
+  - rubocop-rails
+
+Rails/UnknownEnv:
+  Description: Checks that environments called with Rails.env predicates exist.
+  Environments:
+    - production
+    - development
+    - test
+    - staging
+
+Rails/HasAndBelongsToMany:
+  Description: Checks for the use of the has_and_belongs_to_many macro.
+  Enabled: false
+
+Rails/InverseOf:
+  Description: Looks for associations where AR can't determine the inverse association because of a scope.
+  Enabled: false
+
+Rails/FindBy:
+  Description: Identifies usages of where.first and change them to use find_by instead.
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Description: Checks for the use of methods which skip validations.
+  Exclude:
+    - db/migrate/*.rb
