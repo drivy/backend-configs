@@ -15,7 +15,7 @@ module GetaroundUtils::Mixins::Loggable
   end
 
   def base_loggable_logger
-    @base_loggable_logger ||= if respond_to?(:logger)
+    @base_loggable_logger ||= if respond_to?(:logger) && !logger.nil?
       logger
     elsif defined?(Rails)
       Rails.logger
