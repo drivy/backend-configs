@@ -3,6 +3,46 @@ require "spec_helper"
 describe GetaroundUtils::Utils::DeepKeyValue do
   let(:subject) { described_class }
 
+  describe '.escape' do
+    it 'espaces a number correctly' do
+      expect(subject.serialize('content')).to eq('"content"')
+    end
+
+    it 'does not escape an already escaped string' do
+      expect(subject.serialize('"content"')).to eq('"content"')
+    end
+
+    it 'escapes a long string correcly' do
+      expect(subject.serialize('a' * 1000)).to eq(%{"#{'a' * 512} ..."})
+    end
+  end
+
+  describe '.flattify' do
+    it 'flattyfies a mixed hash correctly' do
+      expect(subject.flattify(l1: { s: 'v' }, i: 0, s: 'v', a: [0])).to eq('l1.s' => 'v', 'i' => 0, 's' => 'v', 'a.0' => 0)
+    end
+
+    it 'flattyfies a nested hash correctly' do
+      expect(subject.flattify(l1: { l2: { s: 'v' } })).to eq('l1.l2.s' => 'v')
+    end
+
+    it 'flattyfies a deeply nested hash correctly' do
+      expect(subject.flattify(l1: { l2: { l3: { l4: { l5: { s: 'v' } } } } })).to eq('l1.l2.l3.l4.l5.s' => '...')
+    end
+
+    it 'flattyfies a mixed array correctly' do
+      expect(subject.flattify([['v'], 42, 'v', { i: 0 }])).to eq('0.0' => 'v', '1' => 42, '2' => 'v', '3.i' => 0)
+    end
+
+    it 'flattyfies a nested array correctly' do
+      expect(subject.flattify([[['v']]])).to eq('0.0.0' => 'v')
+    end
+
+    it 'flattyfies a deeply array correctly' do
+      expect(subject.flattify([[[[[['v']]]]]])).to eq('0.0.0.0.0.0' => '...')
+    end
+  end
+
   describe '.serialize' do
     context 'with numbers' do
       it 'serializes a number correctly' do
