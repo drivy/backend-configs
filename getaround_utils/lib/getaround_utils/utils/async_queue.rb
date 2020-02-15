@@ -2,58 +2,48 @@ module GetaroundUtils; end
 module GetaroundUtils::Utils; end
 
 class GetaroundUtils::Utils::AsyncQueue
-  class << self
-    include GetaroundUtils::Mixins::Loggable
+  include GetaroundUtils::Mixins::Loggable
 
-    MAX_QUEUE_SIZE = 100
-    MUTEX = Mutex.new
+  MAX_QUEUE_SIZE = 1000
+  BUFFER_SIZE = 50
 
-    def perform
-      raise NotImplementedError
-    end
+  def initialize
+    @queue = []
+    @mutex = Mutex.new
+    @closed = false
+    @worker = Thread.new(&method(:thread_run))
+    at_exit { terminate }
+  end
 
-    def perform_async(*args)
-      start_once!
+  def perform
+    raise NotImplementedError
+  end
 
-      if @queue.size > MAX_QUEUE_SIZE
-        loggable('warn', 'Queue is overflowing')
-        return
-      end
-
-      @queue.push(args)
-    end
-
-    def start_once!
-      MUTEX.synchronize do
-        return unless @parent.nil?
-
-        @parent = Process.pid
-        @queue = Queue.new
-
-        @worker = Thread.new do
-          while args = @queue.pop
-            begin
-              perform(*args)
-            rescue ClosedQueueError
-              nil
-            rescue StandardError => e
-              loggable('error', e.message, class: e.class.to_s, backtrace: e.backtrace)
-            end
-          end
-        end
-
-        at_exit { terminate }
+  def push(payload)
+    @mutex.synchronize do
+      if @queue.size >= MAX_QUEUE_SIZE
+        loggable_log(:error, 'queue overflow')
+      else
+        @queue.push(payload)
       end
     end
+  end
 
-    def terminate
-      @queue&.close
-      @worker&.join
-    end
+  def thread_run
+    loop do
+      buffer = @mutex.synchronize { @queue.shift(BUFFER_SIZE) }
+      loggable_log(:debug, 'thread_run', buffer_size: buffer.size)
+      return if @closed && buffer.empty?
 
-    def reset
-      terminate
-      @parent = nil
+      perform(buffer) unless buffer.empty?
+      sleep(1) unless @mutex.synchronize { @queue.any? }
+    rescue StandardError => e
+      loggable_log(:error, e.message, class: e.class.to_s, backtrace: e.backtrace)
     end
+  end
+
+  def terminate
+    @mutex.synchronize { @closed = true }
+    @worker&.join
   end
 end
