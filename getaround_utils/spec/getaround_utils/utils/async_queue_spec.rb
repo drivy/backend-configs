@@ -1,95 +1,108 @@
 require "spec_helper"
 
 describe GetaroundUtils::Utils::AsyncQueue do
-  let(:dummy_class) do
-    Class.new(described_class) do
-      def self.perform(*_arg); end
-    end
-  end
+  describe 'functionnal test' do
+    let(:subject) { described_class.new }
 
-  after do
-    dummy_class.reset
-  end
-
-  describe '.perform_async' do
-    it 'performs all the queued tasks' do
-      allow(dummy_class).to receive(:perform)
-
-      99.times { dummy_class.perform_async(1) }
-      dummy_class.terminate
-
-      expect(dummy_class).to have_received(:perform)
-        .with(1).exactly(99).times
+    after do
+      subject.terminate
     end
 
     it 'performs the queued tasks in another thread' do
       main_thread_id = Thread.current.object_id
-      allow(dummy_class).to receive(:perform) do
+      allow(subject).to receive(:perform) do
         expect(Thread.current.object_id).not_to eq(main_thread_id)
       end
 
-      dummy_class.perform_async(1)
-      dummy_class.terminate
+      subject.push(1)
+      subject.terminate
 
-      expect(dummy_class).to have_received(:perform)
+      expect(subject).to have_received(:perform)
     end
 
     it 'does not block the main thread flow' do
-      allow(dummy_class).to receive(:perform) do
-        sleep 0.5
-      end
+      allow(subject).to receive(:perform) { sleep(0.3) }
 
       ts_started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      dummy_class.perform_async(1)
+      subject.push(1)
       main_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - ts_started
 
-      dummy_class.terminate
+      subject.terminate
       task_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - ts_started
 
-      expect(main_duration).to be_within(0.01).of(0)
-      expect(task_duration).to be_within(0.01).of(0.5)
+      expect(main_duration).to be_within(0.1).of(0)
+      expect(task_duration).to be_within(0.1).of(1.3)
+    end
+
+    it 'performs all the queued items' do
+      collected_items = []
+      allow(subject).to receive(:perform) { |items| collected_items.push(*items) }
+
+      256.times { subject.push(1) }
+      subject.terminate
+
+      expect(collected_items.size).to equal(256)
+      expect(subject).to have_received(:perform)
+        .at_most(256).times
     end
 
     it 'logs dropped tasks when the queue overflows' do
-      allow(dummy_class).to receive(:loggable)
-      allow(dummy_class).to receive(:perform) do
-        sleep 0.005
+      allow(subject).to receive(:loggable_log)
+      allow(subject).to receive(:perform) { sleep(0.005) }
+
+      2000.times { subject.push(1) }
+      subject.terminate
+
+      expect(subject).to have_received(:perform)
+        .at_most((2000 / 50) - 1).times
+      expect(subject).to have_received(:loggable_log)
+        .with(:error, 'queue overflow')
+        .at_least(1).times
+    end
+
+    it 'rescue and logs errors that are not handled in #perform and keeps unqueuing' do
+      count = 0
+      allow(subject).to receive(:loggable_log)
+      allow(subject).to receive(:perform) do
+        raise StandardError, 'Test error' if (count += 1) == 1
       end
 
-      1000.times { dummy_class.perform_async(1) }
-      dummy_class.terminate
+      200.times { subject.push(1) }
+      subject.terminate
 
-      expect(dummy_class).to have_received(:perform)
-        .at_most(200).times
-      expect(dummy_class).to have_received(:loggable)
-        .with('warn', 'Queue is overflowing')
-        .at_least(800).times
+      expect(subject).to have_received(:perform)
+        .at_least(200 / 50).times
+      expect(subject).to have_received(:loggable_log)
+        .with(:error, 'Test error', hash_including(class: 'StandardError')).once
+    end
+  end
+
+  describe 'concurency' do
+    let(:subject1) { described_class.new }
+    let(:subject2) { described_class.new }
+
+    after do
+      subject1.terminate
+      subject2.terminate
     end
 
-    it 'rescue and logs errors that are not handled in #perform' do
-      allow(dummy_class).to receive(:loggable)
-      allow(dummy_class).to receive(:perform)
-        .and_raise(StandardError, 'Test error')
+    it 'two queues do not block each other' do
+      allow(subject1).to receive(:perform) { puts("1a"); sleep(0.3); puts("1b"); }
+      allow(subject2).to receive(:perform) { puts("2a"); sleep(0.7); puts("2b"); }
 
-      dummy_class.perform_async(1)
-      dummy_class.terminate
+      ts_started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      subject1.push(1)
+      subject2.push(1)
+      push_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - ts_started
 
-      expect(dummy_class).to have_received(:loggable)
-        .with('error', 'Test error', hash_including(class: 'StandardError'))
-    end
+      subject1.terminate
+      task_1_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - ts_started
+      subject2.terminate
+      task_2_duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - ts_started
 
-    it 'keeps working after rescuing an error' do
-      allow(dummy_class).to receive(:loggable)
-      allow(dummy_class).to receive(:perform)
-        .and_raise(StandardError, 'Test error')
-
-      dummy_class.perform_async(1)
-      dummy_class.perform_async(1)
-      dummy_class.perform_async(1)
-      dummy_class.terminate
-
-      expect(dummy_class).to have_received(:loggable)
-        .exactly(3).times.with('error', 'Test error', hash_including(class: 'StandardError'))
+      expect(push_duration).to be_within(0.01).of(0)
+      expect(task_1_duration).to be_within(0.1).of(1.3)
+      expect(task_2_duration).to be_within(0.1).of(1.7)
     end
   end
 end
