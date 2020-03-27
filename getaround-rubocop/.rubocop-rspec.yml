@@ -2,17 +2,13 @@ require:
   - rubocop-rspec
 
 RSpec/NamedSubject:
-  Description: No justification to why this is better.
-  Enabled: false
+  Enabled: false # Increase spec writing complexity
 
 RSpec/ExampleLength:
-  Description: Exemple length is an unreliable metric.
-  Enabled: false
+  Enabled: false # Exemple length is an unreliable metric.
 
 RSpec/MultipleExpectations:
-  Description: Exemple count is an unreliable metric.
-  Enabled: false
+  Enabled: false # Exemple count is an unreliable metric.
 
 RSpec/MessageSpies:
-  Description: Induces unnecessary repetition in the expectation
-  Enabled: false
+  Enabled: false # Induces unnecessary repetition in the expectation

@@ -1,29 +1,24 @@
 inherit_gem:
   relaxed-rubocop: .rubocop.yml
 
-Style/ClassAndModuleChildren:
-  EnforcedStyle: compact
-
 Metrics/BlockLength:
-  Description: Length is an unreliable metric.
-  Enabled: false
+  Enabled: false # Length is an unreliable metric.
 
 Layout/SpaceInsideArrayLiteralBrackets:
-  Description: Similar to prettier's config.
-  Enabled: false
-
-Layout/FirstArgumentIndentation:
-  Description: Useless indentation is useless.
-  Enabled: false
+  EnforcedStyle: no_space # Similar to prettier's config.
 
 Layout/FirstArrayElementIndentation:
-  Description: Useless indentation is useless.
-  Enabled: false
+  EnforcedStyle: consistent # Consistent with Layout/FirstArgumentIndentation
 
 Layout/FirstHashElementIndentation:
-  Description: Useless indentation is useless.
-  Enabled: false
+  EnforcedStyle: consistent # Consistent with Layout/FirstArgumentIndentation
 
-Layout/FirstParameterIndentation:
-  Description: Useless indentation is useless.
-  Enabled: false
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented # Consistent with Rails style
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation # Consistent with Rails style
+
+AllCops:
+  Exclude:
+    - vendor/**/* # Prevent validation of bundler gems
