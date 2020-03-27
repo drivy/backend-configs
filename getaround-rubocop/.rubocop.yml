@@ -12,18 +12,18 @@ Layout/SpaceInsideArrayLiteralBrackets:
   Description: Similar to prettier's config.
   Enabled: false
 
-Layout/IndentFirstArgument:
+Layout/FirstArgumentIndentation:
   Description: Useless indentation is useless.
   Enabled: false
 
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   Description: Useless indentation is useless.
   Enabled: false
 
-Layout/IndentFirstHashElement:
+Layout/FirstHashElementIndentation:
   Description: Useless indentation is useless.
   Enabled: false
 
-Layout/IndentFirstParameter:
+Layout/FirstParameterIndentation:
   Description: Useless indentation is useless.
   Enabled: false

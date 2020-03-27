@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name          = "getaround-rubocop"
-  gem.version       = '0.1.2'
+  gem.version       = '0.1.3'
   gem.summary       = "Backend configuration files"
   gem.description   = "Shared base configuration for Getaround Backend Applications."
   gem.authors       = ["Drivy", "Laurent Humez"]
@@ -13,6 +13,6 @@ Gem::Specification.new do |gem|
   end
 
   gem.add_runtime_dependency "relaxed-rubocop", '= 2.4'
-  gem.add_runtime_dependency "rubocop", '=  0.75'
+  gem.add_runtime_dependency "rubocop", '=  0.80.1'
   gem.add_development_dependency 'rubocop-rspec', '= 1.36'
 end
