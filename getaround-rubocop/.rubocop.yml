@@ -4,6 +4,11 @@ inherit_gem:
 Metrics/BlockLength:
   Enabled: false # Length is an unreliable metric.
 
+Style/ClassAndModuleChildren:
+  # "compact" style requires explicit module declarations
+  # "nested" syle promotes deep scopes which needs a lot of unnecessary indentation
+  Enabled: false
+
 Layout/SpaceInsideArrayLiteralBrackets:
   EnforcedStyle: no_space # Similar to prettier's config.
 

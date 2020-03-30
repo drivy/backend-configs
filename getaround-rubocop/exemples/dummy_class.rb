@@ -24,3 +24,6 @@ module DummyModule
     end
   end
 end
+
+module DummyModule::InlineClass
+end
