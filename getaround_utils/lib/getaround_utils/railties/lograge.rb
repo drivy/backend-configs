@@ -1,5 +1,4 @@
 require 'rails/railtie'
-require 'getaround_utils/log_formatters/deep_key_value'
 require 'lograge'
 
 module GetaroundUtils; end
@@ -26,6 +25,5 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
   end
 
   config.lograge.enabled = true
-  config.lograge.formatter = GetaroundUtils::LogFormatters::DeepKeyValue.for_lograge
   config.lograge.custom_options = ->(event) { event.payload[:lograge] }
 end

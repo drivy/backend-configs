@@ -3,5 +3,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "faraday", "~> 1.0"
-
 gem "webmock", "~> 3.7"
+gem "ougai", "~> 1.8"
+
+gem "request_store_rails", "~> 2.0"

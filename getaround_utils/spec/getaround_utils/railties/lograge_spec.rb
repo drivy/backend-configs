@@ -46,22 +46,22 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
     # location,
     it 'logs the default event payload infos' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload).to match(/method="GET"/)
-        expect(payload).to match(%r{path="/dummy"})
-        expect(payload).to match(/format="html"/)
-        expect(payload).to match(/controller="AnonymousController/)
-        expect(payload).to match(/action="dummy"/)
-
-        expect(payload).to match(/status=200/)
-        expect(payload).to match(/duration=[.0-9]+/)
-        expect(payload).to match(/view=0/)
-        # expect(payload).to match(/db=0/)
+        expect(payload[:method]).to eq('GET')
+        expect(payload[:path]).to eq('/dummy')
+        expect(payload[:format]).to eq(:html)
+        expect(payload[:controller]).to eq('AnonymousController')
+        expect(payload[:action]).to eq('dummy')
+        expect(payload[:status]).to eq(200)
+        expect(payload[:duration]).to be_a(Float)
+        expect(payload[:view]).to be_a(Float)
       end
       get(:dummy, params: { key: 'dummy' })
     end
 
     it 'logs the location when available' do
-      expect(Rails.logger).to receive(:info).with(%r{location="http://next.com"})
+      expect(Rails.logger).to receive(:info) do |payload|
+        expect(payload[:location]).to eq ('http://next.com')
+      end
       get(:redir)
     end
 
@@ -70,30 +70,35 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
     it 'logs the extra event payload infos' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload).to match(/host="test.host"/)
-        expect(payload).to match(/params\.key="dummy"/)
-        expect(payload).not_to match(/params\.(action|controller)/)
-        expect(payload).to match(/user_agent="Rails Testing"/)
-        expect(payload).to match(/controller_action="anonymous#dummy"/)
-        expect(payload).to match(/session_id="[a-f0-9]{32}"/)
+        expect(payload[:host]).to eq('test.host')
+        expect(payload[:params]).to eq('key' => 'dummy')
+        expect(payload[:user_agent]).to eq('Rails Testing')
+        expect(payload[:controller_action]).to eq('anonymous#dummy')
+        expect(payload[:session_id]).to match(/^[a-f0-9]{32}$/)
       end
       get(:dummy, params: { key: 'dummy' })
     end
 
     it 'logs the host when available' do
-      expect(Rails.logger).to receive(:info).with(/host="dummy.com"/)
+      expect(Rails.logger).to receive(:info) do |payload|
+        expect(payload[:host]).to eq('dummy.com')
+      end
       request.headers['HOST'] = 'dummy.com'
       get(:dummy)
     end
 
     it 'logs the remote ip when available' do
-      expect(Rails.logger).to receive(:info).with(/remote_ip="4.4.4.4"/)
+      expect(Rails.logger).to receive(:info) do |payload|
+        expect(payload[:remote_ip]).to eq('4.4.4.4')
+      end
       request.headers['REMOTE_ADDR'] = '4.4.4.4'
       get(:dummy)
     end
 
     it 'logs the referer when available' do
-      expect(Rails.logger).to receive(:info).with(/referer="previous.com"/)
+      expect(Rails.logger).to receive(:info) do |payload|
+        expect(payload[:referer]).to eq('previous.com')
+      end
       request.headers['HTTP_REFERER'] = 'previous.com'
       get(:dummy)
     end
@@ -102,14 +107,9 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
       user = double
       allow(user).to receive(:id).and_return(42)
       allow(controller).to receive(:current_user).and_return(user)
-      expect(Rails.logger).to receive(:info).with(/user_id=42/)
-      get(:dummy)
-    end
-
-    it 'logs the complete event payload infos' do
-      expect(Rails.logger).to receive(:info).with(
-        %r{^method="GET" path="/dummy" format="html" controller="AnonymousController" action="dummy" status=200 duration=[.0-9]+ view=[.0-9]+ host="test.host" remote_ip="0.0.0.0" user_agent="Rails Testing" controller_action="anonymous#dummy" session_id="[a-f0-9]+"$}
-      )
+      expect(Rails.logger).to receive(:info) do |payload|
+        expect(payload[:user_id]).to eq(42)
+      end
       get(:dummy)
     end
   end

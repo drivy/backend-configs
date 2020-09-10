@@ -1,3 +1,4 @@
-module GetaroundUtils::LogFormatters
-  autoload :DeepKeyValue, 'getaround_utils/log_formatters/deep_key_value'
+module GetaroundUtils::Ougai
+  autoload :DeepKeyValueFormatter, 'getaround_utils/ougai/deep_key_value_formatter'
+  autoload :JsonFormatter, 'getaround_utils/ougai/json_formatter'
 end
