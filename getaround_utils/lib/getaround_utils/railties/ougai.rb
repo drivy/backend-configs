@@ -4,7 +4,6 @@ require 'getaround_utils/ougai/deep_key_value_formatter'
 require 'request_store'
 require 'rails/railtie'
 require 'ougai'
-require 'json'
 
 module GetaroundUtils; end
 module GetaroundUtils::Railties; end
@@ -13,8 +12,7 @@ module GetaroundUtils::Railties; end
 # https://github.com/tilfin/ougai/wiki/Use-as-Rails-logger#define-a-custom-logger
 class OugaiRailsLogger < Ougai::Logger
   include ActiveSupport::LoggerThreadSafeLevel
-  include Rails::VERSION::MAJOR < 6 ?
-    LoggerSilence : ActiveSupport::LoggerSilence
+  include Rails::VERSION::MAJOR < 6 ? LoggerSilence : ActiveSupport::LoggerSilence
 end
 
 # Patch for ActiveSupport::TaggedLogging
@@ -57,7 +55,15 @@ class GetaroundUtils::Railties::Ougai < Rails::Railtie
   end
 
   initializer :getaround_utils_ougai, before: :initialize_logger do |app|
-    app.config.log_level = log_level
+    LOG_LEVELS = {
+      Logger::DEBUG => :debug,
+      Logger::INFO => :info,
+      Logger::WARN => :warn,
+      Logger::ERROR => :error,
+      Logger::FATAL => :fatal,
+    }.freeze
+
+    app.config.log_level = LOG_LEVELS[config.ougai_logger.level] || :info
     app.config.logger = config.ougai_logger
   end
 
@@ -65,25 +71,28 @@ class GetaroundUtils::Railties::Ougai < Rails::Railtie
     app.config.app_middleware.insert_after ActionDispatch::RequestId, OugaiRequestStoreMiddleware
   end
 
-  initializer :getaround_utils_ougai_activesupport do |app|
+  initializer :getaround_utils_ougai_activesupport do
     ActiveSupport::TaggedLogging::Formatter.prepend OugaiTaggedLoggingFormatter
   end
 
   initializer :getaround_utils_ougai_lograge do |app|
+    next unless defined?(Lograge)
+
     app.config.lograge.logger = app.config.logger
     app.config.lograge.formatter = Lograge::Formatters::Raw.new
-  end if defined?(Lograge)
+  end
 
-  initializer :getaround_utils_ougai_sidekiq do |app|
+  initializer :getaround_utils_ougai_sidekiq do
+    next unless defined?(Sidekiq)
+
     # https://github.com/tilfin/ougai/wiki/Customize-Sidekiq-logger
     Sidekiq.logger = config.ougai_logger
 
     Sidekiq.configure_server do |config|
-      config.logger = config.ougai_logger
       config.error_handlers.pop
       config.error_handlers << lambda do |ex, ctx|
         Sidekiq.logger.warn(ex, job: ctx[:job])
       end
     end
-  end if defined?(Sidekiq)
+  end
 end

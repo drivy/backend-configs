@@ -1,9 +1,7 @@
 require 'sidekiq'
 require 'rails_helper'
 
-
 describe GetaroundUtils::Railties::Ougai do
-
   describe 'via Rails' do
     it 'setup a child logger as the Rails logger' do
       expect(Rails.logger).to be_a(OugaiRailsLogger)

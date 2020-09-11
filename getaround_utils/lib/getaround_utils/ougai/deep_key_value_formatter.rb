@@ -5,7 +5,7 @@ module GetaroundUtils; end
 module GetaroundUtils::Ougai; end
 
 class GetaroundUtils::Ougai::DeepKeyValuesFormatter < Ougai::Formatters::Base
-  def _call(severity, time, progname, data)
+  def _call(severity, _time, progname, data)
     data.delete(:msg) if data[:msg] == 'No message'
     data = data.except(:msg).merge(message: data[:msg])
 

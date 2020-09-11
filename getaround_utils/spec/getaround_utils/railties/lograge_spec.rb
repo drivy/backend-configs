@@ -60,7 +60,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
     it 'logs the location when available' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload[:location]).to eq ('http://next.com')
+        expect(payload[:location]).to eq('http://next.com')
       end
       get(:redir)
     end

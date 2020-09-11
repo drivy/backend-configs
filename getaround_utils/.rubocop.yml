@@ -6,6 +6,10 @@ inherit_gem:
     - .rubocop.yml
     - .rubocop-rspec.yml
 
+Layout/MultilineMethodCallIndentation:
+  Description: Vertical alignment results in awkward diffs.
+  EnforcedStyle: indented
+
 Layout/MultilineAssignmentLayout:
   Description: Vertical alignment results in awkward diffs.
   EnforcedStyle: same_line
