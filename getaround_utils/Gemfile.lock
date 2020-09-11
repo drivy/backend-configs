@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    getaround_utils (0.1.20)
+    getaround_utils (0.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -105,6 +105,9 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
+    oj (3.10.14)
+    ougai (1.8.5)
+      oj (~> 3.10)
     parallel (1.18.0)
     parser (2.6.5.0)
       ast (~> 2.4.0)
@@ -149,6 +152,8 @@ GEM
     relaxed-rubocop (2.4)
     request_store (1.4.1)
       rack (>= 1.4)
+    request_store_rails (2.0.0)
+      concurrent-ruby (~> 1.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -216,9 +221,11 @@ DEPENDENCIES
   getaround-rubocop (~> 0.1.0, >= 0.1.0)
   getaround_utils!
   lograge (~> 0.11.2)
+  ougai (~> 1.8)
   pry (~> 0.12.2)
   rails (~> 6.0)
   rake (~> 10.0)
+  request_store_rails (~> 2.0)
   rspec (~> 3.9, >= 3.9.0)
   rspec-rails (~> 3.9)
   rubocop (~> 0.75, >= 0.75.0)
@@ -227,4 +234,4 @@ DEPENDENCIES
   webmock (~> 3.7)
 
 BUNDLED WITH
-   2.1.0
+   2.1.4

@@ -14,6 +14,16 @@ require 'getaround_utils/railties/lograge'
 
 For more details, [read the spec](spec/getaround_utils/railties/lograge_spec.rb)
 
+### GetaroundUtils::Railties::Ougai
+
+Enables structured log with Ougai.
+```
+# config/application.rb
+require 'getaround_utils/railties/ougai'
+```
+
+For more details, [read the spec](spec/getaround_utils/railties/ougai_spec.rb)
+
 ## Mixins
 
 ### GetaroundUtils::Mixins::Loggable
@@ -37,33 +47,6 @@ MyClass.new.action # :info message="hello" origin="MyClass" static="value" dynam
 ```
 
 For more details, [read the spec](spec/getaround_utils/mixins/loggable_spec.rb)
-
-
-## Patches
-
-### GetaroundUtils::Patches::KeyValueLogTags
-
-Enables parse-able key-value tags in ActiveRecord::TaggedLogger
-```
-# config/application.rb
-require 'getaround_utils/patches/key_value_log_tags'
-GetaroundUtils::Patches::KeyValueLogTags.enable
-```
-
-For more details, [read the spec](spec/getaround_utils/patches/key_value_log_tags_spec.rb)
-
-
-### GetaroundUtils::Patches::KeyValueSidekiqExceptions
-
-Enables parse-able exception logging from Sidekiq
-```
-# config/application.rb
-require 'getaround_utils/patches/key_value_sidekiq_exceptions'
-GetaroundUtils::Patches::KeyValueSidekiqExceptions.enable
-```
-
-For more details, [read the spec](spec/getaround_utils/patches/key_value_sidekiq_exceptions_spec.rb)
-
 
 ## Misc
 

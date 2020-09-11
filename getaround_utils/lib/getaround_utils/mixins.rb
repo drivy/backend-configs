@@ -1,3 +1,1 @@
-module GetaroundUtils::Mixins
-  autoload :Loggable, 'getaround_utils/mixins/loggable'
-end
+require 'getaround_utils/mixins/loggable'

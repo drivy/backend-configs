@@ -33,10 +33,7 @@ module GetaroundUtils::Mixins::Loggable
   end
 
   def loggable_log(severity, message, payload = {})
-    payload = { message: message }.merge(payload)
     base_append_infos_to_loggable(payload)
-
-    message = GetaroundUtils::Utils::DeepKeyValue.serialize(payload.compact)
-    base_loggable_logger.send(severity.to_sym, message)
+    base_loggable_logger.send(severity.to_sym, message, payload)
   end
 end
