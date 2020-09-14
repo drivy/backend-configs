@@ -89,7 +89,7 @@ class GetaroundUtils::Railties::Ougai < Rails::Railtie
     Sidekiq.logger = config.ougai_logger
 
     Sidekiq.configure_server do |config|
-      config.error_handlers.pop
+      config.error_handlers.shift
       config.error_handlers << lambda do |ex, ctx|
         Sidekiq.logger.warn(ex, job: ctx[:job])
       end
