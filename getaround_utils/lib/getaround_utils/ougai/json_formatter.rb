@@ -7,7 +7,9 @@ module GetaroundUtils::Ougai; end
 
 class GetaroundUtils::Ougai::JsonFormatter < Ougai::Formatters::Base
   def _call(severity, _time, progname, data)
-    data.delete(:msg) if data[:msg] == 'No message'
+    message = data.delete(:msg)
+    data = { caption: message }.merge(data) \
+      unless message == 'No message'
 
     payload = { severity: severity, progname: progname }.merge(data).compact
     JSON.dump(payload) + "\n"
