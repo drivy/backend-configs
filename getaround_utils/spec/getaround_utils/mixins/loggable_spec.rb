@@ -27,7 +27,7 @@ describe GetaroundUtils::Mixins::Loggable do
 
     it 'injects the class name' do
       expect(dummy_logger).to receive(:error)
-        .with('test', origin: 'BaseClass')
+        .with(msg: 'test', origin: 'BaseClass')
       base_class.use_loggable(:error, 'test')
     end
 
@@ -39,13 +39,13 @@ describe GetaroundUtils::Mixins::Loggable do
       end
 
       expect(dummy_logger).to receive(:info)
-        .with('dummy', key: :value, origin: 'BaseClass', extra: 'dummy')
+        .with(msg: 'dummy', key: :value, origin: 'BaseClass', extra: 'dummy')
       base_class.use_loggable(:info, 'dummy', key: :value)
     end
 
     it 'log warning calling the deprecated function name' do
       expect(dummy_logger).to receive(:error)
-        .with('test', origin: 'BaseClass')
+        .with(msg: 'test', origin: 'BaseClass')
       expect(dummy_logger).to receive(:warn)
       base_class.use_deprecated_loggable(:error, 'test')
     end
@@ -76,7 +76,7 @@ describe GetaroundUtils::Mixins::Loggable do
     context 'with no inheritence' do
       it 'inject the class name' do
         expect(dummy_logger).to receive(:info)
-          .with('dummy', key: :value, origin: 'BaseClass')
+          .with(msg: 'dummy', key: :value, origin: 'BaseClass')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
 
@@ -88,13 +88,13 @@ describe GetaroundUtils::Mixins::Loggable do
         end
 
         expect(dummy_logger).to receive(:info)
-          .with('dummy', key: :value, origin: 'BaseClass', extra: 'dummy')
+          .with(msg: 'dummy', key: :value, origin: 'BaseClass', extra: 'dummy')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
 
       it 'log warning calling the deprecated function name' do
         expect(dummy_logger).to receive(:info)
-          .with('dummy', key: :value, origin: 'BaseClass')
+          .with(msg: 'dummy', key: :value, origin: 'BaseClass')
         expect(dummy_logger).to receive(:warn)
         subject.use_deprecated_loggable(:info, 'dummy', key: :value)
       end
@@ -106,7 +106,7 @@ describe GetaroundUtils::Mixins::Loggable do
 
       it 'inject the class name' do
         expect(dummy_logger).to receive(:info)
-          .with('dummy', key: :value, origin: 'ChildClass')
+          .with(msg: 'dummy', key: :value, origin: 'ChildClass')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
 
@@ -118,7 +118,7 @@ describe GetaroundUtils::Mixins::Loggable do
         end
 
         expect(dummy_logger).to receive(:info)
-          .with('dummy', key: :value, origin: 'ChildClass', parent: 'dummy')
+          .with(msg: 'dummy', key: :value, origin: 'ChildClass', parent: 'dummy')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
 
@@ -136,7 +136,7 @@ describe GetaroundUtils::Mixins::Loggable do
         end
 
         expect(dummy_logger).to receive(:info)
-          .with('dummy', key: :value, origin: 'ChildClass', parent: 'dummy', child: 'dummy')
+          .with(msg: 'dummy', key: :value, origin: 'ChildClass', parent: 'dummy', child: 'dummy')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
     end
