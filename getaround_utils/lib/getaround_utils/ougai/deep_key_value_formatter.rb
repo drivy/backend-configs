@@ -6,7 +6,7 @@ require 'getaround_utils/utils/deep_key_value'
 module GetaroundUtils; end
 module GetaroundUtils::Ougai; end
 
-class GetaroundUtils::Ougai::DeepKeyValuesFormatter < Ougai::Formatters::Base
+class GetaroundUtils::Ougai::DeepKeyValueFormatter < Ougai::Formatters::Base
   def _call(severity, _time, progname, data)
     message = data.delete(:msg)
     data[:message] = message if message != 'No message'
