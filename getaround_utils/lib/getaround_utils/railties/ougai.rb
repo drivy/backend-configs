@@ -40,11 +40,8 @@ class OugaiRequestStoreMiddleware
 end
 
 class GetaroundUtils::Railties::Ougai < Rails::Railtie
-  log_level = ENV.fetch('LOG_LEVEL', :info).to_sym
-
   config.ougai_logger = OugaiRailsLogger.new(STDOUT)
   config.ougai_logger.after_initialize if Rails::VERSION::MAJOR < 6
-  config.ougai_logger.level = log_level
   config.ougai_logger.formatter = GetaroundUtils::Ougai::DeepKeyValueFormatter.new
   config.ougai_logger.before_log = lambda do |data|
     request_store = RequestStore.store[:ougai] || {}
@@ -55,15 +52,6 @@ class GetaroundUtils::Railties::Ougai < Rails::Railtie
   end
 
   initializer :getaround_utils_ougai, before: :initialize_logger do |app|
-    LOG_LEVELS = {
-      Logger::DEBUG => :debug,
-      Logger::INFO => :info,
-      Logger::WARN => :warn,
-      Logger::ERROR => :error,
-      Logger::FATAL => :fatal,
-    }.freeze
-
-    app.config.log_level = LOG_LEVELS[config.ougai_logger.level] || :info
     app.config.logger = config.ougai_logger
   end
 

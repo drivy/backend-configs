@@ -11,6 +11,7 @@ require 'getaround_utils/railties/ougai'
 class DummyApplication < Rails::Application
   config.load_defaults 6.0
   config.eager_load = false
+  config.log_level = :info
 end
 
 Rails.application.initialize!
