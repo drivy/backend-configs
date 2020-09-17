@@ -7,9 +7,9 @@ describe GetaroundUtils::Railties::Ougai do
       expect(Rails.logger).to be_a(OugaiRailsLogger)
     end
 
-    describe 'uses GetaroundUtils::Ougai::DeepKeyValuesFormatter by default' do
+    describe 'uses GetaroundUtils::Ougai::DeepKeyValueFormatter by default' do
       it 'setup a child logger as the Rails logger' do
-        expect(Rails.logger.formatter).to be_a(GetaroundUtils::Ougai::DeepKeyValuesFormatter)
+        expect(Rails.logger.formatter).to be_a(GetaroundUtils::Ougai::DeepKeyValueFormatter)
       end
     end
 
