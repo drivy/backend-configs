@@ -4,7 +4,6 @@ require 'getaround_utils/ougai/deep_key_value_formatter'
 require 'request_store'
 require 'rails/railtie'
 require 'ougai'
-require 'pry'
 
 module GetaroundUtils; end
 module GetaroundUtils::Railties; end
