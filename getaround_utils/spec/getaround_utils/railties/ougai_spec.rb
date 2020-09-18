@@ -81,7 +81,7 @@ describe GetaroundUtils::Railties::Ougai do
       base_logger = OugaiRailsLogger.new(STDOUT)
       logger = ActiveSupport::TaggedLogging.new(base_logger)
       expect(logger.formatter).to receive(:_call)
-        .with('WARN', kind_of(Time), nil,  msg: "message", tags: ["tag"])
+        .with('WARN', kind_of(Time), nil, msg: "message", tags: ["tag"])
       logger.tagged('tag') { logger.warn('message') }
     end
   end
