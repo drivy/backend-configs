@@ -4,6 +4,7 @@ require 'getaround_utils/ougai/deep_key_value_formatter'
 require 'request_store'
 require 'rails/railtie'
 require 'ougai'
+require 'pry'
 
 module GetaroundUtils; end
 module GetaroundUtils::Railties; end
@@ -19,9 +20,13 @@ end
 # https://github.com/tilfin/ougai/wiki/Use-as-Rails-logger#with-activesupporttaggedlogging
 module OugaiTaggedLoggingFormatter
   def call(severity, time, progname, data)
-    data = { msg: data.to_s } unless data.is_a?(Hash)
-    data[:tags] = current_tags if current_tags.any?
-    _call(severity, time, progname, data)
+    if is_a?(Ougai::Formatters::Base)
+      data = { msg: data.to_s } unless data.is_a?(Hash)
+      data[:tags] = current_tags if current_tags.any?
+      _call(severity, time, progname, data)
+    else
+      super
+    end
   end
 end
 
