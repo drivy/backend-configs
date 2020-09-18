@@ -3,9 +3,56 @@ require 'spec_helper'
 describe GetaroundUtils::Mixins::Loggable do
   let(:dummy_logger) { double }
 
+  describe '#loggable_logger' do
+    it 'uses the class logger when available' do
+      stub_const('BaseClass', Class.new{
+        include GetaroundUtils::Mixins::Loggable
+        def use_loggable(*args)
+          loggable_log(*args)
+        end
+      })
+      subject = BaseClass.new
+      expect(subject).to receive(:logger)
+        .and_return(dummy_logger)
+      expect(subject.loggable_logger)
+        .to eq(dummy_logger)
+    end
+
+    it 'uses the Rails logger when available' do
+      stub_const('BaseClass', Class.new{
+        include GetaroundUtils::Mixins::Loggable
+        def use_loggable(*args)
+          loggable_log(*args)
+        end
+      })
+      stub_const('Rails', {})
+      subject = BaseClass.new
+      expect(Rails).to receive(:logger)
+        .and_return(dummy_logger)
+      expect(subject.loggable_logger)
+        .to eq(dummy_logger)
+    end
+
+    it 'uses a safe fallback' do
+      stub_const('BaseClass', Class.new{
+        include GetaroundUtils::Mixins::Loggable
+        def use_loggable(*args)
+          loggable_log(*args)
+        end
+      })
+      expect(Rails).to receive(:logger)
+        .and_return(nil)
+      subject = BaseClass.new
+      expect(subject).to receive(:loggable_logger_fallback)
+        .and_return(dummy_logger)
+      expect(subject.loggable_logger)
+        .to eq(dummy_logger)
+    end
+  end
+
   context 'when included in a static class' do
     before do
-      allow(base_class).to receive(:base_loggable_logger)
+      allow(base_class).to receive(:loggable_logger)
         .and_return(dummy_logger)
     end
 
@@ -16,10 +63,6 @@ describe GetaroundUtils::Mixins::Loggable do
 
           def use_loggable(*args)
             loggable_log(*args)
-          end
-
-          def use_deprecated_loggable(*args)
-            loggable(*args)
           end
         end
       })
@@ -42,13 +85,6 @@ describe GetaroundUtils::Mixins::Loggable do
         .with(msg: 'dummy', key: :value, origin: 'BaseClass', extra: 'dummy')
       base_class.use_loggable(:info, 'dummy', key: :value)
     end
-
-    it 'log warning calling the deprecated function name' do
-      expect(dummy_logger).to receive(:error)
-        .with(msg: 'test', origin: 'BaseClass')
-      expect(dummy_logger).to receive(:warn)
-      base_class.use_deprecated_loggable(:error, 'test')
-    end
   end
 
   context 'when included in a class' do
@@ -59,17 +95,13 @@ describe GetaroundUtils::Mixins::Loggable do
         def use_loggable(*args)
           loggable_log(*args)
         end
-
-        def use_deprecated_loggable(*args)
-          loggable(*args)
-        end
       })
     end
 
     let(:subject) { base_class.new }
 
     before do
-      allow(subject).to receive(:base_loggable_logger)
+      allow(subject).to receive(:loggable_logger)
         .and_return(dummy_logger)
     end
 
@@ -90,13 +122,6 @@ describe GetaroundUtils::Mixins::Loggable do
         expect(dummy_logger).to receive(:info)
           .with(msg: 'dummy', key: :value, origin: 'BaseClass', extra: 'dummy')
         subject.use_loggable(:info, 'dummy', key: :value)
-      end
-
-      it 'log warning calling the deprecated function name' do
-        expect(dummy_logger).to receive(:info)
-          .with(msg: 'dummy', key: :value, origin: 'BaseClass')
-        expect(dummy_logger).to receive(:warn)
-        subject.use_deprecated_loggable(:info, 'dummy', key: :value)
       end
     end
 
