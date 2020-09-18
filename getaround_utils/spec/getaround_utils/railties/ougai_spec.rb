@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sidekiq'
 require 'rails_helper'
 
@@ -63,6 +65,24 @@ describe GetaroundUtils::Railties::Ougai do
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
         .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', request_id: 'test')
       controller.log_message
+    end
+  end
+
+  describe 'via TaggedLogging' do
+    it 'works for a classic logger' do
+      log_message = -> {
+        logger = ActiveSupport::TaggedLogging.new(Logger.new($stdout))
+        logger.tagged('tag') { logger.warn('message') }
+      }
+      expect(log_message).to output("[tag] message\n").to_stdout
+    end
+
+    it 'insert tags to a ougai logger payload' do
+      base_logger = OugaiRailsLogger.new(STDOUT)
+      logger = ActiveSupport::TaggedLogging.new(base_logger)
+      expect(logger.formatter).to receive(:_call)
+        .with('WARN', kind_of(Time), nil,  msg: "message", tags: ["tag"])
+      logger.tagged('tag') { logger.warn('message') }
     end
   end
 
