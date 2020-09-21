@@ -14,26 +14,16 @@ module GetaroundUtils::Mixins::Loggable
     append_infos_to_loggable(payload)
   end
 
-  def base_loggable_logger
-    @base_loggable_logger ||= if respond_to?(:logger) && !logger.nil?
-      logger
-    elsif defined?(Rails)
-      Rails.logger
-    else
-      Logger.new(STDOUT)
-    end
+  def loggable_logger_fallback
+    @loggable_logger_fallback ||= Logger.new(STDOUT)
   end
 
-  def loggable(severity, message, payload = {})
-    base_loggable_logger.send(
-      :warn,
-      "Deprecated usage of GetaroundUtils::Mixins::Loggable#loggable(*args). Please use GetaroundUtils::Mixins::Loggable#loggable_log(*args) instead"
-    )
-    loggable_log(severity, message, payload)
+  def loggable_logger
+    (logger if respond_to?(:logger)) || (Rails.logger if defined?(Rails)) || loggable_logger_fallback
   end
 
   def loggable_log(severity, message, payload = {})
     base_append_infos_to_loggable(payload)
-    base_loggable_logger.send(severity.to_sym, msg: message, **payload)
+    loggable_logger.send(severity.to_sym, msg: message, **payload)
   end
 end
