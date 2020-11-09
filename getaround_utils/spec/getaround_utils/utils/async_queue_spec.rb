@@ -87,8 +87,8 @@ describe GetaroundUtils::Utils::AsyncQueue do
     end
 
     it 'two queues do not block each other' do
-      allow(subject1).to receive(:perform) { puts("1a"); sleep(0.3); puts("1b"); }
-      allow(subject2).to receive(:perform) { puts("2a"); sleep(0.7); puts("2b"); }
+      allow(subject1).to receive(:perform) { sleep(0.3) }
+      allow(subject2).to receive(:perform) { sleep(0.7) }
 
       ts_started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       subject1.push(1)

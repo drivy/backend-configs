@@ -46,13 +46,14 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
     # location,
     it 'logs the default event payload infos' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload[:method]).to eq('GET')
-        expect(payload[:path]).to eq('/dummy')
+        expect(payload[:http][:method]).to eq('GET')
+        expect(payload[:http][:path]).to eq('/dummy')
+        expect(payload[:http][:status]).to eq(200)
+        expect(payload[:http][:duration]).to be_a(Float)
+
         expect(payload[:format]).to eq(:html)
         expect(payload[:controller]).to eq('AnonymousController')
         expect(payload[:action]).to eq('dummy')
-        expect(payload[:status]).to eq(200)
-        expect(payload[:duration]).to be_a(Float)
         expect(payload[:view]).to be_a(Float)
       end
       get(:dummy, params: { key: 'dummy' })
@@ -60,7 +61,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
     it 'logs the location when available' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload[:location]).to eq('http://next.com')
+        expect(payload[:http][:location]).to eq('http://next.com')
       end
       get(:redir)
     end
@@ -70,10 +71,9 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
     it 'logs the extra event payload infos' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload[:host]).to eq('test.host')
+        expect(payload[:http][:host]).to eq('test.host')
+        expect(payload[:http][:user_agent]).to eq('Rails Testing')
         expect(payload[:params]).to eq('key' => 'dummy')
-        expect(payload[:user_agent]).to eq('Rails Testing')
-        expect(payload[:controller_action]).to eq('anonymous#dummy')
         expect(payload[:session_id]).to match(/^[a-f0-9]{32}$/)
       end
       get(:dummy, params: { key: 'dummy' })
@@ -81,7 +81,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
     it 'logs the host when available' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload[:host]).to eq('dummy.com')
+        expect(payload[:http][:host]).to eq('dummy.com')
       end
       request.headers['HOST'] = 'dummy.com'
       get(:dummy)
@@ -89,7 +89,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
     it 'logs the remote ip when available' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload[:remote_ip]).to eq('4.4.4.4')
+        expect(payload[:http][:remote_ip]).to eq('4.4.4.4')
       end
       request.headers['REMOTE_ADDR'] = '4.4.4.4'
       get(:dummy)
@@ -97,7 +97,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
     it 'logs the referer when available' do
       expect(Rails.logger).to receive(:info) do |payload|
-        expect(payload[:referer]).to eq('previous.com')
+        expect(payload[:http][:referer]).to eq('previous.com')
       end
       request.headers['HTTP_REFERER'] = 'previous.com'
       get(:dummy)

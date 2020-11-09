@@ -38,7 +38,7 @@ class OugaiRequestStoreMiddleware
   end
 
   def call(env)
-    RequestStore.store[:ougai] = { request_id: env['action_dispatch.request_id'] }
+    RequestStore.store[:ougai] = { http: { request_id: env['action_dispatch.request_id'] } }
     @app.call(env)
   end
 end
@@ -46,10 +46,10 @@ end
 class GetaroundUtils::Railties::Ougai < Rails::Railtie
   config.ougai_logger = OugaiRailsLogger.new(STDOUT)
   config.ougai_logger.after_initialize if Rails::VERSION::MAJOR < 6
-  config.ougai_logger.formatter = GetaroundUtils::Ougai::DeepKeyValueFormatter.new
+  config.ougai_logger.formatter = GetaroundUtils::Ougai::JsonFormatter.new
   config.ougai_logger.before_log = lambda do |data|
     request_store = RequestStore.store[:ougai] || {}
-    data.merge!(request_store) if request_store&.any?
+    data.deep_merge!(request_store) if request_store&.any?
 
     sidekiq_context = Thread.current[:sidekiq_context] || {}
     data.merge!(sidekiq: sidekiq_context) if sidekiq_context&.any?
