@@ -11,7 +11,7 @@ describe GetaroundUtils::Railties::Ougai do
 
     describe 'uses GetaroundUtils::Ougai::DeepKeyValueFormatter by default' do
       it 'setup a child logger as the Rails logger' do
-        expect(Rails.logger.formatter).to be_a(GetaroundUtils::Ougai::DeepKeyValueFormatter)
+        expect(Rails.logger.formatter).to be_a(GetaroundUtils::Ougai::JsonFormatter)
       end
     end
 
@@ -41,9 +41,9 @@ describe GetaroundUtils::Railties::Ougai do
       allow(RequestStore.store).to receive(:[])
         .and_call_original
       expect(RequestStore.store).to receive(:[]).with(:ougai)
-        .and_return(request_id: 'test')
+        .and_return(http: { request_id: 'test' })
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
-        .with("INFO", kind_of(Time), nil, hash_including(method: 'GET', request_id: 'test'))
+        .with("INFO", kind_of(Time), nil, hash_including(http: hash_including(method: 'GET', request_id: 'test')))
       get(:index)
     end
   end
@@ -61,9 +61,9 @@ describe GetaroundUtils::Railties::Ougai do
       allow(RequestStore.store).to receive(:[])
         .and_call_original
       expect(RequestStore.store).to receive(:[]).with(:ougai)
-        .and_return(request_id: 'test')
+        .and_return(http: { request_id: 'test' })
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
-        .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', request_id: 'test')
+        .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', http: { request_id: 'test' })
       controller.log_message
     end
   end
