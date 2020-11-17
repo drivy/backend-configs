@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'ougai'
 require 'json'
 
 module GetaroundUtils; end
