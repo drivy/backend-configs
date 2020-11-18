@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   end
 
-  gem.add_runtime_dependency "relaxed-rubocop", '= 2.5'
-  gem.add_runtime_dependency "rubocop", '= 1.3.1'
-  gem.add_development_dependency 'rubocop-rspec', '= 1.41.0'
+  gem.add_runtime_dependency 'relaxed-rubocop', '= 2.5'
+  gem.add_runtime_dependency 'rubocop', '= 1.3.1'
+  gem.add_runtime_dependency 'rubocop-rspec', '= 1.41.0'
 end
