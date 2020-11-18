@@ -8,15 +8,21 @@ AllCops:
 
 Metrics/BlockLength:
   Enabled: false # Length is an unreliable metric.
+
 Style/ClassAndModuleChildren:
   Enabled: false # Neither styles are satisfying in all cases
+
 Layout/SpaceInsideArrayLiteralBrackets:
   EnforcedStyle: no_space # Similar to prettier's config.
+
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent # Consistent with Layout/FirstArgumentIndentation
+
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent # Consistent with Layout/FirstArgumentIndentation
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented # Consistent with Rails style
+
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation # Consistent with Rails style
