@@ -1,6 +1,8 @@
 require:
   - rubocop-rspec
 
+inherit_from: .rubocop.yml
+
 RSpec/NamedSubject:
   Enabled: false # Increase spec writing complexity
 
