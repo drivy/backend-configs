@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rails', '~> 6.0'
   gem.add_development_dependency "rake", "~> 13.0"
   gem.add_development_dependency 'rspec', '~> 3.9', '>= 3.9.0'
-  gem.add_development_dependency 'rspec-rails', '~> 3.9'
+  gem.add_development_dependency 'rspec-rails', '~> 4.0'
   gem.add_development_dependency 'rubocop', '~> 0.75', '>= 0.75.0'
   gem.add_development_dependency 'rubocop-rspec', '~> 1.36', '>= 0.36.0'
   gem.add_development_dependency 'sidekiq', '~> 6.0'
