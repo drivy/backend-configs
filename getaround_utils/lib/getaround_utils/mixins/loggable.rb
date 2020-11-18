@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'logger'
 module GetaroundUtils; end
 module GetaroundUtils::Mixins; end
@@ -15,7 +17,7 @@ module GetaroundUtils::Mixins::Loggable
   end
 
   def loggable_logger_fallback
-    @loggable_logger_fallback ||= Logger.new(STDOUT)
+    @loggable_logger_fallback ||= Logger.new($stdout)
   end
 
   def loggable_logger

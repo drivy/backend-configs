@@ -12,6 +12,6 @@ class GetaroundUtils::Ougai::DeepKeyValueFormatter < Ougai::Formatters::Base
     data[:message] = message if message != 'No message'
 
     payload = { severity: severity, progname: progname }.merge(data).compact
-    GetaroundUtils::Utils::DeepKeyValue.serialize(payload) + "\n"
+    "#{GetaroundUtils::Utils::DeepKeyValue.serialize(payload)}\n"
   end
 end

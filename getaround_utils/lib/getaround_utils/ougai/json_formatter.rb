@@ -13,6 +13,6 @@ class GetaroundUtils::Ougai::JsonFormatter < Ougai::Formatters::Base
       unless message == 'No message'
 
     payload = { severity: severity, progname: progname }.merge(data).compact
-    JSON.dump(payload) + "\n"
+    "#{JSON.dump(payload)}\n"
   end
 end

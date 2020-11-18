@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'getaround_utils/mixins'
 require 'getaround_utils/ougai'
 require 'getaround_utils/utils'

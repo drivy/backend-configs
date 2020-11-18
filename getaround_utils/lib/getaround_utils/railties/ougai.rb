@@ -44,7 +44,7 @@ class OugaiRequestStoreMiddleware
 end
 
 class GetaroundUtils::Railties::Ougai < Rails::Railtie
-  config.ougai_logger = OugaiRailsLogger.new(STDOUT)
+  config.ougai_logger = OugaiRailsLogger.new($stdout)
   config.ougai_logger.after_initialize if Rails::VERSION::MAJOR < 6
   config.ougai_logger.formatter = GetaroundUtils::Ougai::JsonFormatter.new
   config.ougai_logger.before_log = lambda do |data|

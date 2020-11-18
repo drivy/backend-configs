@@ -40,7 +40,7 @@ describe GetaroundUtils::Railties::Ougai do
     it 'includes values from the RequestStore data hash' do
       allow(RequestStore.store).to receive(:[])
         .and_call_original
-      expect(RequestStore.store).to receive(:[]).with(:ougai)
+      allow(RequestStore.store).to receive(:[]).with(:ougai)
         .and_return(http: { request_id: 'test' })
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
         .with("INFO", kind_of(Time), nil, hash_including(http: hash_including(method: 'GET', request_id: 'test')))
@@ -60,7 +60,7 @@ describe GetaroundUtils::Railties::Ougai do
     it 'includes the extra data from RequestStore' do
       allow(RequestStore.store).to receive(:[])
         .and_call_original
-      expect(RequestStore.store).to receive(:[]).with(:ougai)
+      allow(RequestStore.store).to receive(:[]).with(:ougai)
         .and_return(http: { request_id: 'test' })
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
         .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', http: { request_id: 'test' })
@@ -78,7 +78,7 @@ describe GetaroundUtils::Railties::Ougai do
     end
 
     it 'insert tags to a ougai logger payload' do
-      base_logger = OugaiRailsLogger.new(STDOUT)
+      base_logger = OugaiRailsLogger.new($stdout)
       logger = ActiveSupport::TaggedLogging.new(base_logger)
       expect(logger.formatter).to receive(:_call)
         .with('WARN', kind_of(Time), nil, msg: "message", tags: ["tag"])
@@ -103,7 +103,7 @@ describe GetaroundUtils::Railties::Ougai do
     it 'includes the extra data from the sidekiq context' do
       allow(Thread.current).to receive(:[])
         .and_call_original
-      expect(Thread.current).to receive(:[]).with(:sidekiq_context)
+      allow(Thread.current).to receive(:[]).with(:sidekiq_context)
         .and_return(job_id: 'test')
 
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)

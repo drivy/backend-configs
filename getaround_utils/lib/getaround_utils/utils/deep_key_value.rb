@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GetaroundUtils; end
 module GetaroundUtils::Utils; end
 

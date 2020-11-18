@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GetaroundUtils::Mixins::Loggable do
@@ -12,7 +14,7 @@ describe GetaroundUtils::Mixins::Loggable do
         end
       })
       subject = BaseClass.new
-      expect(subject).to receive(:logger)
+      allow(subject).to receive(:logger)
         .and_return(dummy_logger)
       expect(subject.loggable_logger)
         .to eq(dummy_logger)
@@ -27,7 +29,7 @@ describe GetaroundUtils::Mixins::Loggable do
       })
       stub_const('Rails', {})
       subject = BaseClass.new
-      expect(Rails).to receive(:logger)
+      allow(Rails).to receive(:logger)
         .and_return(dummy_logger)
       expect(subject.loggable_logger)
         .to eq(dummy_logger)
@@ -40,10 +42,10 @@ describe GetaroundUtils::Mixins::Loggable do
           loggable_log(*args)
         end
       })
-      expect(Rails).to receive(:logger)
+      allow(Rails).to receive(:logger)
         .and_return(nil)
       subject = BaseClass.new
-      expect(subject).to receive(:loggable_logger_fallback)
+      allow(subject).to receive(:loggable_logger_fallback)
         .and_return(dummy_logger)
       expect(subject.loggable_logger)
         .to eq(dummy_logger)
@@ -95,19 +97,18 @@ describe GetaroundUtils::Mixins::Loggable do
         def use_loggable(*args)
           loggable_log(*args)
         end
+
+        def loggable_logger
+          @loggable_logger ||= Logger.new(nil)
+        end
       })
     end
 
     let(:subject) { base_class.new }
 
-    before do
-      allow(subject).to receive(:loggable_logger)
-        .and_return(dummy_logger)
-    end
-
     context 'with no inheritence' do
       it 'inject the class name' do
-        expect(dummy_logger).to receive(:info)
+        expect(subject.loggable_logger).to receive(:info)
           .with(msg: 'dummy', key: :value, origin: 'BaseClass')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
@@ -119,7 +120,7 @@ describe GetaroundUtils::Mixins::Loggable do
           end
         end
 
-        expect(dummy_logger).to receive(:info)
+        expect(subject.loggable_logger).to receive(:info)
           .with(msg: 'dummy', key: :value, origin: 'BaseClass', extra: 'dummy')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
@@ -130,7 +131,7 @@ describe GetaroundUtils::Mixins::Loggable do
       let(:subject) { child_class.new }
 
       it 'inject the class name' do
-        expect(dummy_logger).to receive(:info)
+        expect(subject.loggable_logger).to receive(:info)
           .with(msg: 'dummy', key: :value, origin: 'ChildClass')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
@@ -142,7 +143,7 @@ describe GetaroundUtils::Mixins::Loggable do
           end
         end
 
-        expect(dummy_logger).to receive(:info)
+        expect(subject.loggable_logger).to receive(:info)
           .with(msg: 'dummy', key: :value, origin: 'ChildClass', parent: 'dummy')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
@@ -160,7 +161,7 @@ describe GetaroundUtils::Mixins::Loggable do
           end
         end
 
-        expect(dummy_logger).to receive(:info)
+        expect(subject.loggable_logger).to receive(:info)
           .with(msg: 'dummy', key: :value, origin: 'ChildClass', parent: 'dummy', child: 'dummy')
         subject.use_loggable(:info, 'dummy', key: :value)
       end
