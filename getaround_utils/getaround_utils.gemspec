@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'lograge', '~> 0.11.2'
   gem.add_development_dependency 'pry', '~> 0.12.2'
   gem.add_development_dependency 'rails', '~> 6.0'
-  gem.add_development_dependency "rake", "~> 12.3"
+  gem.add_development_dependency "rake", "~> 13.0"
   gem.add_development_dependency 'rspec', '~> 3.9', '>= 3.9.0'
   gem.add_development_dependency 'rspec-rails', '~> 3.9'
   gem.add_development_dependency 'rubocop', '~> 0.75', '>= 0.75.0'
