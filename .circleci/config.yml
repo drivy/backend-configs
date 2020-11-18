@@ -18,19 +18,12 @@ jobs:
           name: Run rubocop with vanilla config
           command: |
             bundle exec rubocop \
-              --config .rubocop.yml .empty \
-              -o /dev/null 2>&1 | tee stderr \
-              && [ ! -s stderr ]
+              --config .rubocop.yml
       - run:
           name: Run rubocop with rspec config
           command: |
             bundle exec rubocop \
-              --config .rubocop-rspec.yml .empty \
-              -o /dev/null 2>&1 | tee stderr \
-              && [ ! -s stderr ]
-      - run:
-          name: Build gem
-          command: gem build getaround-rubocop
+              --config .rubocop-rspec.yml
 
   test-getaround_utils:
     docker:
@@ -51,9 +44,6 @@ jobs:
       - run:
           name: Test (RSpec)
           command: bundle exec rspec
-      - run:
-          name: Build gem
-          command: gem build getaround_utils
 
 
 workflows:
