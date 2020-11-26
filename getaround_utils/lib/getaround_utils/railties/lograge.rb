@@ -18,6 +18,7 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
       payload[:lograge][:referer] = request.referer
       payload[:lograge][:session_id] = session.is_a?(Hash) ? session[:id] : session.id.to_s if defined?(session)
       payload[:lograge][:user_id] = current_user&.id if defined?(current_user)
+      payload[:lograge][:origin] = 'lograge'
     end
   end
 
