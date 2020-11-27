@@ -57,6 +57,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
         expect(payload[:controller]).to eq('AnonymousController')
         expect(payload[:action]).to eq('dummy')
         expect(payload[:view]).to be_a(Float)
+        expect(payload[:origin]).to eq('lograge')
       end
       get(:dummy, params: { key: 'dummy' })
     end
