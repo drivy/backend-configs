@@ -43,6 +43,30 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
       }
     end
 
+    context 'with the newrelic trace infos' do
+      it 'return no values when newrelic module is not loaded' do
+        expect(Rails.logger).to receive(:info) do |payload|
+          expect(payload["trace.id"]).to eq(nil)
+          expect(payload["span.id"]).to eq(nil)
+        end
+        get(:dummy, params: { key: 'dummy' })
+      end
+
+      it 'return ids when newrelic module is loaded' do
+        stub_const('Newrelic::Agent::Tracer', Class.new{})
+        allow( Newrelic::Agent::Tracer).to receive(:trace_id)
+          .and_return("12345")
+        allow( Newrelic::Agent::Tracer).to receive(:span_id)
+          .and_return("6789")
+
+        expect(Rails.logger).to receive(:info) do |payload|
+          expect(payload["trace.id"]).to eq("12345")
+          expect(payload["span.id"]).to eq("6789")
+        end
+        get(:dummy, params: { key: 'dummy' })
+      end
+    end
+
     # Values set by lograge
     # method, path, format, controller, action, status, duration, view, (db)
     # location,

@@ -19,6 +19,11 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
       payload[:lograge][:session_id] = session.is_a?(Hash) ? session[:id] : session.id.to_s if defined?(session)
       payload[:lograge][:user_id] = current_user&.id if defined?(current_user)
       payload[:lograge][:origin] = 'lograge'
+
+      return unless defined?(Newrelic::Agent::Tracer)
+
+      payload[:lograge]["span.id"] = Newrelic::Agent::Tracer.span_id
+      payload[:lograge]["trace.id"] = Newrelic::Agent::Tracer.trace_id
     end
   end
 
