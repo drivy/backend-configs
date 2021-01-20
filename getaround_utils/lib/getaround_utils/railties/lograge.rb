@@ -20,10 +20,16 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
       payload[:lograge][:user_id] = current_user&.id if defined?(current_user)
       payload[:lograge][:origin] = 'lograge'
 
-      return unless defined?(Newrelic::Agent::Tracer)
+      if defined?(NewRelic::Agent::Tracer)
+        if span_id = NewRelic::Agent::Tracer.span_id
+          payload[:lograge]["span.id"] = span_id
+        end
+        if trace_id = NewRelic::Agent::Tracer.trace_id
+          payload[:lograge]["trace.id"] = trace_id
+        end
+      end
 
-      payload[:lograge]["span.id"] = Newrelic::Agent::Tracer.span_id
-      payload[:lograge]["trace.id"] = Newrelic::Agent::Tracer.trace_id
+      nil
     end
   end
 

@@ -53,10 +53,10 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
       end
 
       it 'return ids when newrelic module is loaded' do
-        stub_const('Newrelic::Agent::Tracer', Class.new{})
-        allow( Newrelic::Agent::Tracer).to receive(:trace_id)
+        stub_const('NewRelic::Agent::Tracer', Class.new{})
+        allow(NewRelic::Agent::Tracer).to receive(:trace_id)
           .and_return("12345")
-        allow( Newrelic::Agent::Tracer).to receive(:span_id)
+        allow(NewRelic::Agent::Tracer).to receive(:span_id)
           .and_return("6789")
 
         expect(Rails.logger).to receive(:info) do |payload|
