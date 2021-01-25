@@ -22,11 +22,18 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
 
       if defined?(NewRelic::Agent::Tracer)
         if span_id = NewRelic::Agent::Tracer.span_id
-          payload[:lograge]["span.id"] = span_id
+          payload[:lograge]['span.id'] = span_id
         end
         if trace_id = NewRelic::Agent::Tracer.trace_id
-          payload[:lograge]["trace.id"] = trace_id
+          payload[:lograge]['trace.id'] = trace_id
         end
+        payload[:lograge]['entity.type'] = 'SERVICE'
+        payload[:lograge]['entity.guid'] = NewRelic::Agent.config[:entity_guid]
+        payload[:lograge]['entity.name'] = NewRelic::Agent.config[:app_name]&.first
+      end
+
+      if defined?(NewRelic::Agent::Hostname)
+        payload[:lograge]['hostname'] = NewRelic::Agent::Hostname.get
       end
 
       nil

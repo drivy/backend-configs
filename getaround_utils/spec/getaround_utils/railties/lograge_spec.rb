@@ -54,14 +54,23 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
 
       it 'return ids when newrelic module is loaded' do
         stub_const('NewRelic::Agent::Tracer', Class.new{})
+        stub_const('NewRelic::Agent::Hostname', Class.new{})
+        allow(NewRelic::Agent).to receive(:config)
+          .and_return({ entity_guid: "azerty", app_name: ["my_app_name"] })
         allow(NewRelic::Agent::Tracer).to receive(:trace_id)
           .and_return("12345")
         allow(NewRelic::Agent::Tracer).to receive(:span_id)
           .and_return("6789")
+        allow(NewRelic::Agent::Hostname).to receive(:get)
+          .and_return("my_hostname")
 
         expect(Rails.logger).to receive(:info) do |payload|
           expect(payload["trace.id"]).to eq("12345")
           expect(payload["span.id"]).to eq("6789")
+          expect(payload["entity.guid"]).to eq("azerty")
+          expect(payload["entity.name"]).to eq("my_app_name")
+          expect(payload["entity.type"]).to eq("SERVICE")
+          expect(payload["hostname"]).to eq("my_hostname")
         end
         get(:dummy, params: { key: 'dummy' })
       end
