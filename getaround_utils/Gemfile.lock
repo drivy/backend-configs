@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    getaround_utils (0.2.18)
+    getaround_utils (0.2.19)
 
 GEM
   remote: https://rubygems.org/
