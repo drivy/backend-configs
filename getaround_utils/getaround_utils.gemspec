@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'pry', '~> 0.14.0'
   gem.add_development_dependency 'rake', '~> 13.0'
   gem.add_development_dependency 'rspec', '~> 3.9', '>= 3.9.0'
-  gem.add_development_dependency 'rspec-rails', '~> 4.0'
+  gem.add_development_dependency 'rspec-rails', '~> 5.0'
   gem.add_development_dependency 'rubocop', '= 1.3.1'
   gem.add_development_dependency 'webmock', '~> 3.7'
 
