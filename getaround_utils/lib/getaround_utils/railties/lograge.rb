@@ -53,6 +53,6 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
     event.payload[:lograge]
   }
   config.lograge.before_format = ->(data, _) {
-    data.except(*HTTP_PARAMS).merge(http: data.slice(*HTTP_PARAMS))
+    data.except(*HTTP_PARAMS).deep_merge(http: data.slice(*HTTP_PARAMS))
   }
 end
