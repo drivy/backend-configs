@@ -14,3 +14,12 @@ RSpec/MultipleExpectations:
 
 RSpec/MessageSpies:
   Enabled: false # Induces unnecessary repetition in the expectation
+
+RSpec/StubbedMock:
+  Enabled: false # StubbedMock semantics are different
+
+RSpec/SubjectStub:
+  Enabled: false # RSpec/SubjectStub is an accepted pattern
+
+RSpec/VerifiedDoubles:
+  Enabled: false # double have a more practical interface
