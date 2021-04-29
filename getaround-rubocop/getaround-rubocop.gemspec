@@ -17,5 +17,5 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'relaxed-rubocop', '= 2.5'
   gem.add_runtime_dependency 'rubocop', '= 1.11.0'
-  gem.add_runtime_dependency 'rubocop-rspec', '= 2.2.0'
+  gem.add_runtime_dependency 'rubocop-rspec', '= 2.3.0'
 end
