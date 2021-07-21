@@ -122,11 +122,8 @@ describe GetaroundUtils::Utils::DeepKeyValue do
       end
 
       it 'serializes a deep hash with a complex payload correctly' do
-        expect(subject.serialize(
-                 a1: { b1: { c2: 'value' }, b2: [1, 42.0] }, a2: { b1: 'fifty' }, a3: [{ b3: 'c4' }],
-               )).to eq(
-                 'a1.b1.c2="value" a1.b2.0=1 a1.b2.1=42.0 a2.b1="fifty" a3.0.b3="c4"'
-               )
+        expect(subject.serialize(a1: { b1: { c2: 'value' }, b2: [1, 42.0] }, a2: { b1: 'fifty' }, a3: [{ b3: 'c4' }]))
+          .to eq('a1.b1.c2="value" a1.b2.0=1 a1.b2.1=42.0 a2.b1="fifty" a3.0.b3="c4"')
       end
 
       it 'truncates a hash that is too deep' do
