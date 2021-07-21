@@ -4,6 +4,7 @@ require 'rails/railtie'
 require 'lograge'
 
 module GetaroundUtils; end
+
 module GetaroundUtils::Railties; end
 
 class GetaroundUtils::Railties::Lograge < Rails::Railtie

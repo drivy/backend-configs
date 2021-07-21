@@ -6,6 +6,7 @@ require 'rails/railtie'
 require 'ougai'
 
 module GetaroundUtils; end
+
 module GetaroundUtils::Railties; end
 
 # Rails-compatible Ougai Logger
