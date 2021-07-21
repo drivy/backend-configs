@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    getaround-rubocop (0.2.5)
+    getaround-rubocop (0.2.6)
       relaxed-rubocop (= 2.5)
       rubocop (= 1.18.3)
       rubocop-rspec (= 2.4.0)
@@ -41,4 +41,4 @@ DEPENDENCIES
   getaround-rubocop!
 
 BUNDLED WITH
-   2.1.4
+   2.2.21
