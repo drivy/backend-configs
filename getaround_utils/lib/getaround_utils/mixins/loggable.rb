@@ -2,6 +2,7 @@
 
 require 'logger'
 module GetaroundUtils; end
+
 module GetaroundUtils::Mixins; end
 
 module GetaroundUtils::Mixins::Loggable

@@ -4,6 +4,7 @@ require 'ougai'
 require 'json'
 
 module GetaroundUtils; end
+
 module GetaroundUtils::Ougai; end
 
 class GetaroundUtils::Ougai::JsonFormatter < Ougai::Formatters::Base
