@@ -4,7 +4,6 @@ require_relative './lib/getaround_utils/version'
 
 Gem::Specification.new do |gem|
   gem.name = 'getaround_utils'
-  gem.required_ruby_version = '>=2.6'
   gem.version = GetaroundUtils::VERSION
   gem.summary = 'Backend shared utility classes'
   gem.description = 'Shared base utility classes for Getaround Backend Applications.'
@@ -12,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.email = ['oss@drivy.com']
   gem.homepage = 'https://github.com/drivy'
   gem.license = 'MIT'
+  gem.required_ruby_version = '>= 2.6'
 
   gem.files = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }

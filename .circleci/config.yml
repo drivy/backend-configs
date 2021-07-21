@@ -3,7 +3,7 @@ jobs:
 
   test-getaround-rubucop:
     docker:
-      - image: circleci/ruby:2.6.4-stretch
+      - image: circleci/ruby:2.6.7-stretch
     working_directory: /tmp/build/getaround-rubocop
     steps:
       - checkout:
@@ -27,7 +27,7 @@ jobs:
 
   test-getaround_utils:
     docker:
-      - image: circleci/ruby:2.6.4-stretch
+      - image: circleci/ruby:2.6.7-stretch
     working_directory: /tmp/build/getaround_utils
     steps:
       - checkout:
