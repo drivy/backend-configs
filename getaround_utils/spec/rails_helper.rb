@@ -14,6 +14,7 @@ class DummyApplication < Rails::Application
   config.load_defaults 6.0
   config.eager_load = false
   config.log_level = :info
+  config.monitorable_log_thresholds = {}
 end
 
 Rails.application.initialize!

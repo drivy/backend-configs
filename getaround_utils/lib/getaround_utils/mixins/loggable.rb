@@ -29,4 +29,20 @@ module GetaroundUtils::Mixins::Loggable
     base_append_infos_to_loggable(payload)
     loggable_logger.send(severity.to_sym, msg: message, **payload)
   end
+
+  MONITORABLE_LOG_PREFIX = "monitorable_log__"
+
+  def monitorable_log(event_name, **options)
+    log_message = MONITORABLE_LOG_PREFIX + event_name
+    configuration_threshold = Rails.application.config.monitorable_log_thresholds[event_name.to_sym] if defined?(Rails)
+    alert_threshold = ENV["#{log_message}_threshold".upcase]&.to_i || configuration_threshold
+    return if alert_threshold.blank?
+
+    loggable_log(
+      :info,
+      log_message,
+      alert_threshold: alert_threshold,
+      **options
+    )
+  end
 end

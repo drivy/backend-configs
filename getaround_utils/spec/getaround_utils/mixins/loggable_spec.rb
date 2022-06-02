@@ -167,4 +167,80 @@ describe GetaroundUtils::Mixins::Loggable do
       end
     end
   end
+
+  describe '#monitorable_log' do
+    subject { base_class.new }
+
+    before do
+      allow(base_class).to receive(:loggable_logger)
+        .and_return(dummy_logger)
+      allow(Rails.application.config.monitorable_log_thresholds)
+        .to receive(:[])
+        .with(event_name.to_sym)
+        .and_return(10)
+    end
+
+    let(:base_class) do
+      stub_const('BaseClass', Class.new{
+        include GetaroundUtils::Mixins::Loggable
+
+        def use_monitorable(*args)
+          monitorable_log(*args)
+        end
+      })
+    end
+    let(:event_name) { 'dummy' }
+
+    it 'logs message' do
+      expect(subject.loggable_logger).to receive(:info).with(
+        msg: "monitorable_log__#{event_name}",
+        alert_threshold: 10,
+        origin: "BaseClass"
+      )
+      subject.use_monitorable(event_name)
+    end
+
+    context 'with a threshold configured in environment' do
+      before do
+        allow(ENV).to receive(:[]).with('MONITORABLE_LOG__DUMMY_THRESHOLD').and_return('20')
+      end
+
+      it 'logs message with environment threshold' do
+        expect(subject.loggable_logger).to receive(:info).with(
+          msg: "monitorable_log__#{event_name}",
+          alert_threshold: 20,
+          origin: "BaseClass"
+        )
+        subject.use_monitorable(event_name)
+      end
+    end
+
+    context 'with extra arguments' do
+      it 'logs message with environment threshold' do
+        expect(subject.loggable_logger).to receive(:info).with(
+          msg: "monitorable_log__#{event_name}",
+          alert_threshold: 10,
+          origin: "BaseClass",
+          extra: "argument"
+        )
+        subject.use_monitorable(event_name, extra: "argument")
+      end
+    end
+
+    context 'with no thresholds configured' do
+      before do
+        allow(base_class).to receive(:loggable_logger)
+          .and_return(dummy_logger)
+        allow(Rails.application.config.monitorable_log_thresholds)
+          .to receive(:[])
+          .with(event_name.to_sym)
+          .and_return(nil)
+      end
+
+      it 'does not log anything' do
+        expect(subject.loggable_logger).not_to receive(:info)
+        subject.use_monitorable(event_name)
+      end
+    end
+  end
 end

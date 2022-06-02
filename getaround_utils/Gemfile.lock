@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    getaround_utils (0.2.22)
+    getaround_utils (0.2.23)
 
 GEM
   remote: https://rubygems.org/
@@ -235,4 +235,4 @@ DEPENDENCIES
   webmock (~> 3.7)
 
 BUNDLED WITH
-   2.2.26
+   2.3.4
