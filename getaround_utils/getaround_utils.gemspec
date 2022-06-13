@@ -28,7 +28,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 3.7'
 
   # Functional (optional) dependencies
-  gem.add_development_dependency 'lograge', '~> 0.11.2'
+  gem.add_development_dependency 'lograge', '~> 0.12.0'
   gem.add_development_dependency 'ougai', '~> 2.0'
   gem.add_development_dependency 'rails', '~> 6.0'
   gem.add_development_dependency 'request_store_rails', '~> 2.0'
