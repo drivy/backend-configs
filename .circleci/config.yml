@@ -1,7 +1,7 @@
 version: 2
 jobs:
 
-  test-getaround-rubucop:
+  test-getaround-rubocop:
     docker:
       - image: cimg/ruby:2.7.4
     working_directory: /tmp/build/getaround-rubocop
@@ -51,5 +51,5 @@ workflows:
 
   test-and-deploy:
     jobs:
-      - test-getaround-rubucop
+      - test-getaround-rubocop
       - test-getaround_utils
