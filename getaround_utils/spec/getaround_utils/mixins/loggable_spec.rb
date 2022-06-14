@@ -175,7 +175,7 @@ describe GetaroundUtils::Mixins::Loggable do
       allow(base_class).to receive(:loggable_logger)
         .and_return(dummy_logger)
       allow(Rails.application.config.monitorable_log_thresholds)
-        .to receive(:[])
+        .to receive(:dig)
         .with(event_name.to_sym)
         .and_return(10)
     end
@@ -232,7 +232,7 @@ describe GetaroundUtils::Mixins::Loggable do
         allow(base_class).to receive(:loggable_logger)
           .and_return(dummy_logger)
         allow(Rails.application.config.monitorable_log_thresholds)
-          .to receive(:[])
+          .to receive(:dig)
           .with(event_name.to_sym)
           .and_return(nil)
       end

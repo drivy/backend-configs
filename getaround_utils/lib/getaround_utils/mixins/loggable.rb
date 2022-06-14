@@ -33,16 +33,34 @@ module GetaroundUtils::Mixins::Loggable
   MONITORABLE_LOG_PREFIX = "monitorable_log__"
 
   def monitorable_log(event_name, **options)
-    log_message = MONITORABLE_LOG_PREFIX + event_name
-    configuration_threshold = Rails.application.config.monitorable_log_thresholds[event_name.to_sym] if defined?(Rails)
-    alert_threshold = ENV["#{log_message}_threshold".upcase]&.to_i || configuration_threshold
-    return if alert_threshold.blank?
+    monitorable_threshold = monitorable_threshold(event_name)
+    return if monitorable_threshold.blank?
 
     loggable_log(
       :info,
-      log_message,
-      alert_threshold: alert_threshold,
+      log_message(event_name),
+      alert_threshold: monitorable_threshold,
       **options
     )
+  end
+
+  def monitorable_threshold(event_name)
+    monitorable_threshold = ENV["#{log_message(event_name)}_threshold".upcase]&.to_i
+    if monitorable_threshold.nil? && rails_config_defined?
+      monitorable_threshold = Rails.application.config.monitorable_log_thresholds&.dig(event_name.to_sym)
+    end
+    monitorable_threshold
+  end
+
+  def log_message(event_name)
+    MONITORABLE_LOG_PREFIX + event_name
+  end
+
+  private
+
+  def rails_config_defined?
+    defined?(Rails) &&
+      Rails.application.config.respond_to?(:monitorable_log_thresholds) &&
+      Rails.application.config.monitorable_log_thresholds.respond_to?(:dig)
   end
 end
