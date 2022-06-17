@@ -4,6 +4,31 @@ Backend shared utility classes
 
 ## Railties
 
+### GetaroundUtils::Railties::Dotenv
+
+Enable currated .env files loading
+```
+# config/application.rb
+require 'getaround_utils/railties/dotenv'
+
+GetaroundUtils::Railties::Dotenv.load
+```
+
+Additional files can be loaded with the highed precedence via the `DOTENVS` variable, ie:
+```
+DOTENVS=custom1,custom2 rails c
+# Will `load` .env files in the following order:
+# - `.env.custom1.local`
+# - `.env.custom1`
+# - `.env.custom2.local`
+# - `.env.custom2`
+# - `.env.<RAILS_ENV>.local`
+# - `.env.<RAILS_ENV>`
+# - `.env.all.local`
+# - `.env.all`
+# - `.env.local`
+```
+
 ### GetaroundUtils::Railties::Lograge
 
 Enables lograge (http logs) with favored default.
