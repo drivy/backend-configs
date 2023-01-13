@@ -13,7 +13,12 @@ module GetaroundUtils::Railties; end
 # https://github.com/tilfin/ougai/wiki/Use-as-Rails-logger#define-a-custom-logger
 class OugaiRailsLogger < Ougai::Logger
   include ActiveSupport::LoggerThreadSafeLevel
-  include Rails::VERSION::MAJOR < 6 ? LoggerSilence : ActiveSupport::LoggerSilence
+  include ActiveSupport::LoggerSilence
+
+  def initialize(*args)
+    super
+    after_initialize if respond_to?(:after_initialize) && ActiveSupport::VERSION::MAJOR < 6
+  end
 end
 
 # Patch for ActiveSupport::TaggedLogging
@@ -46,14 +51,14 @@ end
 
 class GetaroundUtils::Railties::Ougai < Rails::Railtie
   config.ougai_logger = OugaiRailsLogger.new($stdout)
-  config.ougai_logger.after_initialize if Rails::VERSION::MAJOR < 6
   config.ougai_logger.formatter = GetaroundUtils::Ougai::JsonFormatter.new
-  config.ougai_logger.before_log = lambda do |data|
-    request_store = RequestStore.store[:ougai] || {}
-    data.deep_merge!(request_store) if request_store&.any?
 
-    sidekiq_context = Thread.current[:sidekiq_context] || {}
-    data.merge!(sidekiq: sidekiq_context) if sidekiq_context&.any?
+  config.ougai_logger.before_log = lambda do |data|
+    data.deep_merge!(RequestStore.store[:ougai]) \
+      if defined?(RequestStore) && RequestStore.store.key?(:ougai)
+
+    data.merge!(sidekiq: Thread.current[:sidekiq_context]) \
+      if defined?(Sidekiq) && Thread.current.key?(:sidekiq_context)
   end
 
   initializer :getaround_utils_ougai, before: :initialize_logger do |app|
@@ -61,16 +66,17 @@ class GetaroundUtils::Railties::Ougai < Rails::Railtie
   end
 
   initializer :getaround_utils_ougai_middleware do |app|
-    app.config.app_middleware.insert_after ActionDispatch::RequestId, OugaiRequestStoreMiddleware
+    app.config.app_middleware.insert_after(ActionDispatch::RequestId, OugaiRequestStoreMiddleware)
   end
 
   initializer :getaround_utils_ougai_activesupport do
-    ActiveSupport::TaggedLogging::Formatter.prepend OugaiTaggedLoggingFormatter
+    ActiveSupport::TaggedLogging::Formatter.prepend(OugaiTaggedLoggingFormatter)
   end
 
   initializer :getaround_utils_ougai_lograge do |app|
     next unless defined?(Lograge)
 
+    # https://github.com/tilfin/ougai/wiki/Use-as-Rails-logger#with-lograge
     app.config.lograge.logger = app.config.logger
     app.config.lograge.formatter = Lograge::Formatters::Raw.new
   end
@@ -79,9 +85,13 @@ class GetaroundUtils::Railties::Ougai < Rails::Railtie
     next unless defined?(Sidekiq)
 
     # https://github.com/tilfin/ougai/wiki/Customize-Sidekiq-logger
-    Sidekiq.logger = config.ougai_logger
+    Sidekiq.configure_client do |config|
+      config.logger = Rails.application.config.logger
+    end
 
     Sidekiq.configure_server do |config|
+      config.logger = Rails.application.config.logger
+
       original_handler = config.error_handlers.shift
       config.error_handlers << lambda do |ex, ctx|
         if Sidekiq.logger.is_a?(Ougai::Logger)

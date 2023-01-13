@@ -38,10 +38,8 @@ describe GetaroundUtils::Railties::Ougai do
     end
 
     it 'includes values from the RequestStore data hash' do
-      allow(RequestStore.store).to receive(:[])
-        .and_call_original
-      allow(RequestStore.store).to receive(:[]).with(:ougai)
-        .and_return(http: { request_id: 'test' })
+      allow(RequestStore).to receive(:store)
+        .and_return(ougai: { http: { request_id: 'test' } })
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
         .with("INFO", kind_of(Time), nil, hash_including(http: hash_including(method: 'GET', request_id: 'test')))
       get(:index)
@@ -58,10 +56,8 @@ describe GetaroundUtils::Railties::Ougai do
     end
 
     it 'includes the extra data from RequestStore' do
-      allow(RequestStore.store).to receive(:[])
-        .and_call_original
-      allow(RequestStore.store).to receive(:[]).with(:ougai)
-        .and_return(http: { request_id: 'test' })
+      allow(RequestStore).to receive(:store)
+        .and_return(ougai: { http: { request_id: 'test' } })
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
         .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', http: { request_id: 'test' })
       controller.log_message
@@ -101,10 +97,8 @@ describe GetaroundUtils::Railties::Ougai do
     end
 
     it 'includes the extra data from the sidekiq context' do
-      allow(Thread.current).to receive(:[])
-        .and_call_original
-      allow(Thread.current).to receive(:[]).with(:sidekiq_context)
-        .and_return(job_id: 'test')
+      allow(Thread).to receive(:current)
+        .and_return(sidekiq_context: { job_id: 'test' })
 
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
         .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', sidekiq: { job_id: 'test' })
