@@ -16,7 +16,7 @@ class GetaroundUtils::Railties::Dotenv < Rails::Railtie
       Dotenv.load(*overrides)
     end
     Dotenv::Railtie.load
-    Dotenv.load('.env.all', '.env.all.local')
+    Dotenv.load('.env.all.local', '.env.all')
     nil
   end
 end
