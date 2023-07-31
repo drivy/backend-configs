@@ -92,14 +92,17 @@ describe GetaroundUtils::Railties::Ougai do
       end
     }
 
+    around do |ex|
+      Thread.current[:sidekiq_context] = { job_id: 'test' }
+      ex.run
+      Thread.current[:sidekiq_context] = nil
+    end
+
     it 'is setup as the default sidekiq logger' do
       expect(Sidekiq.logger).to be_a(OugaiRailsLogger)
     end
 
     it 'includes the extra data from the sidekiq context' do
-      allow(Thread).to receive(:current)
-        .and_return(sidekiq_context: { job_id: 'test' })
-
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
         .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', sidekiq: { job_id: 'test' })
       worker.new.perform
