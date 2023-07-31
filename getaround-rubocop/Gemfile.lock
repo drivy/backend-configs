@@ -4,7 +4,7 @@ PATH
     getaround-rubocop (0.2.7)
       relaxed-rubocop (= 2.5)
       rubocop (= 1.55.0)
-      rubocop-rspec (= 2.22.0)
+      rubocop-rspec (= 2.23.0)
 
 GEM
   remote: https://rubygems.org/
@@ -38,7 +38,7 @@ GEM
       rubocop (~> 1.41)
     rubocop-factory_bot (2.23.1)
       rubocop (~> 1.33)
-    rubocop-rspec (2.22.0)
+    rubocop-rspec (2.23.0)
       rubocop (~> 1.33)
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
