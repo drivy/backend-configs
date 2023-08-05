@@ -1,6 +1,11 @@
 inherit_gem:
   relaxed-rubocop: .rubocop.yml
 
+inherit_from:
+  - .rubocop-performance.yml
+  - .rubocop-rails.yml
+  - .rubocop-rspec.yml
+
 AllCops:
   Exclude:
     - vendor/**/* # Prevent validation of bundler gems
