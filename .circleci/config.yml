@@ -19,11 +19,6 @@ jobs:
           command: |
             bundle exec rubocop \
               --config .rubocop.yml
-      - run:
-          name: Run rubocop with rspec config
-          command: |
-            bundle exec rubocop \
-              --config .rubocop-rspec.yml
 
   test-getaround_utils:
     docker:
