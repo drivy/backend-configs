@@ -19,12 +19,12 @@ Gem::Specification.new do |gem|
 
   # Development dependencies
   gem.add_development_dependency 'bundler', '~> 2.0'
-  gem.add_development_dependency 'getaround-rubocop', '= 0.2.8'
+  gem.add_development_dependency 'getaround-rubocop', '= 0.2.9'
   gem.add_development_dependency 'pry', '~> 0.14.0'
   gem.add_development_dependency 'rake', '~> 13.0'
   gem.add_development_dependency 'rspec', '~> 3.9', '>= 3.9.0'
   gem.add_development_dependency 'rspec-rails', '~> 6.0'
-  gem.add_development_dependency 'rubocop', '= 1.55.0'
+  gem.add_development_dependency 'rubocop', '= 1.55.1'
   gem.add_development_dependency 'webmock', '~> 3.7'
 
   # Functional (optional) dependencies
