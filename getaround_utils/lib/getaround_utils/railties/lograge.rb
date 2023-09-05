@@ -43,6 +43,7 @@ class GetaroundUtils::Railties::Lograge < Rails::Railtie
 
   initializer 'getaround_utils.action_controller' do
     ActionController::Base.prepend LogrageActionController
+    ActionController::API.prepend LogrageActionController
   end
 
   HTTP_PARAMS = [:method, :path, :host, :remote_ip,
