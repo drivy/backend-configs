@@ -5,13 +5,13 @@ PATH
       relaxed-rubocop (= 2.5)
       rubocop (= 1.55.1)
       rubocop-performance (= 1.18.0)
-      rubocop-rails (= 2.20.2)
+      rubocop-rails (= 2.21.1)
       rubocop-rspec (= 2.23.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.7.2)
+    activesupport (7.0.8)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -22,7 +22,7 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.6.3)
     language_server-protocol (3.17.0.3)
-    minitest (5.19.0)
+    minitest (5.20.0)
     parallel (1.23.0)
     parser (3.2.2.3)
       ast (~> 2.4.1)
@@ -53,7 +53,7 @@ GEM
     rubocop-performance (1.18.0)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.20.2)
+    rubocop-rails (2.21.1)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
