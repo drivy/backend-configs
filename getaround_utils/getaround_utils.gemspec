@@ -17,6 +17,9 @@ Gem::Specification.new do |gem|
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   end
 
+  # Common dependencies
+  gem.add_dependency 'rack', '~> 2.0'
+
   # Development dependencies
   gem.add_development_dependency 'bundler', '~> 2.0'
   gem.add_development_dependency 'getaround-rubocop', '= 0.2.8'
