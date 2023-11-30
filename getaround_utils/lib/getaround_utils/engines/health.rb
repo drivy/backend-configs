@@ -8,9 +8,9 @@ module GetaroundUtils; end
 module GetaroundUtils::Engines; end
 
 module GetaroundUtils::Engines::Health
-  RELEASE_VERSION_PATH = '/health/release_version'
-  COMMIT_SHA1_PATH = '/health/commit_sha1'
-  MIGRATION_STATUS_PATH = '/health/migration_status'
+  RELEASE_VERSION_PATH = '/release_version'
+  COMMIT_SHA1_PATH = '/commit_sha1'
+  MIGRATION_STATUS_PATH = '/migration_status'
   UNDEFINED = 'N/A'
 
   def self.release_version
