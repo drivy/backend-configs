@@ -17,13 +17,13 @@ describe GetaroundUtils::Railties::Ougai do
 
     it 'forwards simple log params to the formatter' do
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
-        .with("ERROR", kind_of(Time), nil, msg: 'message')
+        .with("ERROR", kind_of(Time), nil, { msg: 'message' })
       Rails.logger.error('message')
     end
 
     it 'forwards structured log params to the formatter' do
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
-        .with("ERROR", kind_of(Time), nil, key: :value, msg: 'message')
+        .with("ERROR", kind_of(Time), nil, { key: :value, msg: 'message' })
       Rails.logger.error('message', key: :value)
     end
   end
@@ -59,7 +59,7 @@ describe GetaroundUtils::Railties::Ougai do
       allow(RequestStore).to receive(:store)
         .and_return(ougai: { http: { request_id: 'test' } })
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
-        .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', http: { request_id: 'test' })
+        .with("WARN", kind_of(Time), nil, { key: :value, msg: 'message', http: { request_id: 'test' } })
       controller.log_message
     end
   end
@@ -77,7 +77,7 @@ describe GetaroundUtils::Railties::Ougai do
       base_logger = OugaiRailsLogger.new($stdout)
       logger = ActiveSupport::TaggedLogging.new(base_logger)
       expect(logger.formatter).to receive(:_call)
-        .with('WARN', kind_of(Time), nil, msg: "message", tags: ["tag"])
+        .with('WARN', kind_of(Time), nil, { msg: "message", tags: ["tag"] })
       logger.tagged('tag') { logger.warn('message') }
     end
   end
@@ -104,7 +104,7 @@ describe GetaroundUtils::Railties::Ougai do
 
     it 'includes the extra data from the sidekiq context' do
       expect(Rails.application.config.ougai_logger.formatter).to receive(:call)
-        .with("WARN", kind_of(Time), nil, key: :value, msg: 'message', sidekiq: { job_id: 'test' })
+        .with("WARN", kind_of(Time), nil, { key: :value, msg: 'message', sidekiq: { job_id: 'test' } })
       worker.new.perform
     end
   end

@@ -184,8 +184,8 @@ describe GetaroundUtils::Mixins::Loggable do
       stub_const('BaseClass', Class.new{
         include GetaroundUtils::Mixins::Loggable
 
-        def use_monitorable(*args)
-          monitorable_log(*args)
+        def use_monitorable(*args, **kwargs)
+          monitorable_log(*args, **kwargs)
         end
       })
     end
