@@ -6,12 +6,12 @@ module GetaroundUtils; end
 module GetaroundUtils::Mixins; end
 
 module GetaroundUtils::Mixins::Loggable
-  def class_name
-    @class_name ||= is_a?(Class) ? name : self.class.name
+  def loggable_class_name
+    @loggable_class_name ||= is_a?(Class) ? name : self.class.name
   end
 
   def base_append_infos_to_loggable(payload)
-    payload[:origin] = class_name
+    payload[:origin] = loggable_class_name
     return unless respond_to?(:append_infos_to_loggable)
 
     append_infos_to_loggable(payload)
@@ -38,27 +38,27 @@ module GetaroundUtils::Mixins::Loggable
 
     loggable_log(
       :info,
-      log_message(event_name),
+      monitorable_log_message(event_name),
       alert_threshold: monitorable_threshold,
       **options
     )
   end
 
   def monitorable_threshold(event_name)
-    monitorable_threshold = ENV["#{log_message(event_name)}_threshold".upcase]&.to_i
-    if monitorable_threshold.nil? && rails_config_defined?
+    monitorable_threshold = ENV["#{monitorable_log_message(event_name)}_threshold".upcase]&.to_i
+    if monitorable_threshold.nil? && monitorable_rails_config_defined?
       monitorable_threshold = Rails.application.config.monitorable_log_thresholds&.dig(event_name.to_sym)
     end
     monitorable_threshold
   end
 
-  def log_message(event_name)
+  def monitorable_log_message(event_name)
     MONITORABLE_LOG_PREFIX + event_name
   end
 
   private
 
-  def rails_config_defined?
+  def monitorable_rails_config_defined?
     defined?(Rails) &&
       Rails.application.config.respond_to?(:monitorable_log_thresholds) &&
       Rails.application.config.monitorable_log_thresholds.respond_to?(:dig)
