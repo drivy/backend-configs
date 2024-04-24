@@ -17,9 +17,6 @@ Gem::Specification.new do |gem|
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   end
 
-  # Common dependencies
-  gem.add_dependency 'rack', '~> 2.0'
-
   # Development dependencies
   gem.add_development_dependency 'bundler', '~> 2.0'
   gem.add_development_dependency 'getaround-rubocop', '= 0.2.8'
@@ -34,6 +31,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'dotenv', '~> 3.0.0'
   gem.add_development_dependency 'lograge', '~> 0.13.0'
   gem.add_development_dependency 'ougai', '~> 2.0'
+  gem.add_development_dependency 'rack', '> 2.0'
   gem.add_development_dependency 'rails', '~> 6.0'
   gem.add_development_dependency 'request_store_rails', '~> 2.0'
   gem.add_development_dependency 'sidekiq', '> 6.0', "< 8.0"

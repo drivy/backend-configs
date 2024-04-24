@@ -1,8 +1,7 @@
 PATH
   remote: .
   specs:
-    getaround_utils (0.2.32)
-      rack (~> 2.0)
+    getaround_utils (0.2.33)
 
 GEM
   remote: https://rubygems.org/
@@ -251,6 +250,7 @@ DEPENDENCIES
   lograge (~> 0.13.0)
   ougai (~> 2.0)
   pry (~> 0.14.0)
+  rack (> 2.0)
   rails (~> 6.0)
   rake (~> 13.0)
   request_store_rails (~> 2.0)
