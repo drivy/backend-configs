@@ -24,7 +24,11 @@ module GetaroundUtils::Engines::Health
   def self.needs_migration?
     return false unless defined?(ActiveRecord)
 
-    ActiveRecord::Base.connection.migration_context.needs_migration?
+    if ActiveRecord.version < Gem::Version.create("7.2.1")
+      ActiveRecord::Base.connection.migration_context.needs_migration?
+    else
+      ActiveRecord::MigrationContext.new(ActiveRecord::Migrator.migrations_paths).needs_migration?
+    end
   end
 
   def self.engine
