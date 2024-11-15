@@ -102,7 +102,7 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
-    method_source (1.0.0)
+    method_source (1.1.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.4)
     minitest (5.19.0)
@@ -117,7 +117,7 @@ GEM
     parser (3.2.2.3)
       ast (~> 2.4.1)
       racc
-    pry (0.14.2)
+    pry (0.15.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.0.1)
@@ -249,7 +249,7 @@ DEPENDENCIES
   getaround_utils!
   lograge (~> 0.13.0)
   ougai (~> 2.0)
-  pry (~> 0.14.0)
+  pry (~> 0.15.0)
   rack (> 2.0)
   rails (~> 6.0)
   rake (~> 13.0)
