@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'irb', '~> 1.15'
   gem.add_development_dependency 'rake', '~> 13.2'
   gem.add_development_dependency 'rspec', '~> 3.13'
-  gem.add_development_dependency 'rspec-rails', '~> 7.1'
+  gem.add_development_dependency 'rspec-rails', '~> 8.0'
   gem.add_development_dependency 'rubocop', '~> 1.75.0'
   gem.add_development_dependency 'webmock', '~> 3.25'
 
