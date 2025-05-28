@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe GetaroundUtils::Utils::DeepKeyValue do
-  let(:subject) { described_class }
+  subject { described_class }
 
   describe '.escape' do
     it 'espaces a number correctly' do

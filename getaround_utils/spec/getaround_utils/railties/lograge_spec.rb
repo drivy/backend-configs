@@ -54,8 +54,8 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
         context 'with the newrelic trace infos' do
           it 'return no values when newrelic module is not loaded' do
             expect(Lograge.formatter).to receive(:call) do |payload|
-              expect(payload["trace.id"]).to eq(nil)
-              expect(payload["span.id"]).to eq(nil)
+              expect(payload["trace.id"]).to be_nil
+              expect(payload["span.id"]).to be_nil
             end
             get(:dummy, params: { key: 'dummy' })
           end
@@ -65,10 +65,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
             stub_const('NewRelic::Agent::Hostname', Class.new{})
             allow(NewRelic::Agent).to receive(:config)
               .and_return({ entity_guid: "azerty", app_name: ["my_app_name"] })
-            allow(NewRelic::Agent::Tracer).to receive(:trace_id)
-              .and_return("12345")
-            allow(NewRelic::Agent::Tracer).to receive(:span_id)
-              .and_return("6789")
+            allow(NewRelic::Agent::Tracer).to receive_messages(trace_id: "12345", span_id: "6789")
             allow(NewRelic::Agent::Hostname).to receive(:get)
               .and_return("my_hostname")
 

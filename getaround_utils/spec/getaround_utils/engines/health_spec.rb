@@ -46,7 +46,7 @@ RSpec.describe GetaroundUtils::Engines::Health do
         allow(ENV).to receive(:[]).with('PORTER_POD_REVISION').and_return(nil)
       end
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe GetaroundUtils::Engines::Health do
         allow(ENV).to receive(:[]).with('COMMIT_SHA1').and_return(nil)
       end
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -123,9 +123,7 @@ RSpec.describe GetaroundUtils::Engines::Health do
     let(:needs_migration) { false }
 
     before do
-      allow(described_class).to receive(:release_version).and_return(release_version)
-      allow(described_class).to receive(:commit_sha1).and_return(commit_sha1)
-      allow(described_class).to receive(:needs_migration?).and_return(needs_migration)
+      allow(described_class).to receive_messages(release_version: release_version, commit_sha1: commit_sha1, needs_migration?: needs_migration)
     end
 
     shared_examples 'renders undefined' do

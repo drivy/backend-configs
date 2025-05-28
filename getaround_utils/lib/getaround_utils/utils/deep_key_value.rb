@@ -6,7 +6,7 @@ module GetaroundUtils::Utils; end
 
 module GetaroundUtils::Utils::DeepKeyValue
   def self.escape(value, max_length = 512)
-    value = value[1...-1] if value =~ /^".*"$/
+    value = value[1...-1] if /^".*"$/.match?(value)
     value = "#{value[0...max_length]} ..." if value.length >= max_length
     value.inspect
   end

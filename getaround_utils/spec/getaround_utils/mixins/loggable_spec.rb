@@ -90,6 +90,8 @@ describe GetaroundUtils::Mixins::Loggable do
   end
 
   context 'when included in a class' do
+    subject { base_class.new }
+
     let(:base_class) do
       stub_const('BaseClass', Class.new{
         include GetaroundUtils::Mixins::Loggable
@@ -103,8 +105,6 @@ describe GetaroundUtils::Mixins::Loggable do
         end
       })
     end
-
-    let(:subject) { base_class.new }
 
     context 'with no inheritence' do
       it 'inject the class name' do
@@ -127,8 +127,9 @@ describe GetaroundUtils::Mixins::Loggable do
     end
 
     context 'with inheritence' do
+      subject { child_class.new }
+
       let(:child_class) { stub_const('ChildClass', Class.new(base_class)) }
-      let(:subject) { child_class.new }
 
       it 'inject the class name' do
         expect(subject.loggable_logger).to receive(:info)
