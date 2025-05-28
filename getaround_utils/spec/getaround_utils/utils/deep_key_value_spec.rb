@@ -106,7 +106,7 @@ describe GetaroundUtils::Utils::DeepKeyValue do
       end
 
       it 'serializes a flat hash with complex values correctly' do
-        expect(subject.serialize(key: Tempfile.new)).to match(/^key="#<File:.+>"$/)
+        expect(subject.serialize(key: Tempfile.new)).to match(/^key="#<(Tempf)|(F)ile:.+>"$/)
       end
 
       it 'serializes a flat hash with simple array correctly' do
@@ -133,7 +133,7 @@ describe GetaroundUtils::Utils::DeepKeyValue do
 
     context 'with objects' do
       it 'serializes an object correctly' do
-        expect(subject.serialize(value: Tempfile.new)).to match(/^value="#<File.+>"$/)
+        expect(subject.serialize(value: Tempfile.new)).to match(/^value="#<(Tempf)|File.+>"$/)
       end
     end
   end

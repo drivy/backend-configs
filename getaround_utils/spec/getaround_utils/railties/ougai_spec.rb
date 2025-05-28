@@ -70,7 +70,7 @@ describe GetaroundUtils::Railties::Ougai do
         logger = ActiveSupport::TaggedLogging.new(Logger.new($stdout))
         logger.tagged('tag') { logger.warn('message') }
       }
-      expect(log_message).to output("[tag] message\n").to_stdout
+      expect{ log_message.call }.to output("[tag] message\n").to_stdout
     end
 
     it 'insert tags to a ougai logger payload' do
