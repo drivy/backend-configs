@@ -18,21 +18,19 @@ Gem::Specification.new do |gem|
   end
 
   # Development dependencies
-  gem.add_development_dependency 'bundler', '~> 2.0'
-  gem.add_development_dependency 'getaround-rubocop', '= 0.2.8'
-  gem.add_development_dependency 'pry', '~> 0.14.0'
-  gem.add_development_dependency 'rake', '~> 13.0'
-  gem.add_development_dependency 'rspec', '~> 3.9', '>= 3.9.0'
-  gem.add_development_dependency 'rspec-rails', '~> 6.0'
-  gem.add_development_dependency 'rubocop', '= 1.55.0'
-  gem.add_development_dependency 'webmock', '~> 3.7'
+  gem.add_development_dependency 'getaround-rubocop', '= 0.2.11'
+  gem.add_development_dependency 'irb', '~> 1.15'
+  gem.add_development_dependency 'rake', '~> 13.2'
+  gem.add_development_dependency 'rspec', '~> 3.13'
+  gem.add_development_dependency 'rspec-rails', '~> 7.1'
+  gem.add_development_dependency 'rubocop', '~> 1.75.0'
+  gem.add_development_dependency 'webmock', '~> 3.25'
 
   # Functional (optional) dependencies
-  gem.add_development_dependency 'dotenv', '~> 3.0.0'
-  gem.add_development_dependency 'lograge', '~> 0.13.0'
+  gem.add_development_dependency 'dotenv', '~> 3.1.8'
+  gem.add_development_dependency 'lograge', '~> 0.14.0'
   gem.add_development_dependency 'ougai', '~> 2.0'
-  gem.add_development_dependency 'rack', '> 2.0'
+  gem.add_development_dependency 'rack', '> 2.2'
   gem.add_development_dependency 'rails', '~> 7.0'
-  gem.add_development_dependency 'request_store_rails', '~> 2.0'
-  gem.add_development_dependency 'sidekiq', '> 6.0', "< 8.0"
+  gem.add_development_dependency 'sidekiq', '> 7.0'
 end
