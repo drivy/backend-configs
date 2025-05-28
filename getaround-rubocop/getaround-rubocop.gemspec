@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.email = ["oss@drivy.com"]
   gem.homepage = "https://github.com/drivy"
   gem.license = "MIT"
-  gem.required_ruby_version = '>= 3.0'
+  gem.required_ruby_version = '>= 3.3'
 
   gem.files = Dir.chdir(File.expand_path(__dir__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
