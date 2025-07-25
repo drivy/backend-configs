@@ -6,7 +6,11 @@ require 'rails_helper'
 describe GetaroundUtils::Railties::Ougai do
   describe 'via Rails' do
     it 'setup a child logger as the Rails logger' do
-      expect(Rails.logger).to be_a(OugaiRailsLogger)
+      if defined?(ActiveSupport::BroadcastLogger) && Rails.logger.is_a?(ActiveSupport::BroadcastLogger)
+        expect(Rails.logger.broadcasts[0]).to be_a(OugaiRailsLogger)
+      else
+        expect(Rails.logger).to be_a(OugaiRailsLogger)
+      end
     end
 
     describe 'uses GetaroundUtils::Ougai::DeepKeyValueFormatter by default' do
@@ -52,7 +56,11 @@ describe GetaroundUtils::Railties::Ougai do
     end
 
     it 'is setup as the default ActionController.logger' do
-      expect(controller.logger).to be_a(OugaiRailsLogger)
+      if defined?(ActiveSupport::BroadcastLogger) && Rails.logger.is_a?(ActiveSupport::BroadcastLogger)
+        expect(Rails.logger.broadcasts[0]).to be_a(OugaiRailsLogger)
+      else
+        expect(Rails.logger).to be_a(OugaiRailsLogger)
+      end
     end
 
     it 'includes the extra data from RequestStore' do
