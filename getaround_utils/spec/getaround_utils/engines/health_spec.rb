@@ -94,7 +94,10 @@ RSpec.describe GetaroundUtils::Engines::Health do
     context 'when ActiveRecord is defined' do
       before do
         stub_const('ActiveRecord', Class.new)
-        stub_const('ActiveRecord::Base', double(connection: double(migration_context: double(needs_migration?: needs_migration))))
+        stub_const('ActiveRecord::Migrator', double(migrations_paths: []))
+        stub_const('ActiveRecord::MigrationContext', double)
+        allow(ActiveRecord::MigrationContext).to receive(:new)
+          .and_return(double(needs_migration?: needs_migration))
       end
 
       # rubocop:disable RSpec/NestedGroups
