@@ -93,7 +93,8 @@ class GetaroundUtils::Railties::Ougai < Rails::Railtie
       config.logger = Rails.application.config.logger
 
       original_handler = config.error_handlers.shift
-      config.error_handlers << lambda do |ex, ctx, **_|
+      # Third argument "config" was introduced in 7.x, enforced in 8.x
+      config.error_handlers << lambda do |ex, ctx, _config = nil|
         if Sidekiq.logger.is_a?(Ougai::Logger)
           Sidekiq.logger.warn(ex, job: ctx[:job])
         else
