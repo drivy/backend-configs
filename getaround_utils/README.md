@@ -119,11 +119,26 @@ For more details, [read the spec](spec/getaround_utils/mixins/loggable_spec.rb#L
 
 ## Misc
 
-### GetaroundUtils::LogFormatters::DeepKeyValue
+### GetaroundUtils::Utils::DeepKeyValue
 
 This log formatter will serialize an object of any depth into a key-value string.
 It supports basic scalars (ie: `Hash`,`Array`,`Numeric`,`String`) and will call "#inspect" for any other type.
 
-For more details, [read the spec](spec/getaround_utils/log_formatters/deep_key_value_spec.rb)
+For more details, [read the spec](spec/getaround_utils/utils/deep_key_value_spec.rb)
 
+### GetaroundUtils::Utils::ConfigUrl
 
+This helper allows to manage configuration urls with password extracted in a dedicated variable.
+
+It uses `*_URL` variable and tries to compute `*_PASSWORD` inside the parsed url.
+
+```ruby
+# Environment variables
+# TEST_CONFIG_URL="mysql://username@localhost:666/test"
+# TEST_CONFIG_PASSWORD="password"
+
+GetaroundUtils::Utils::ConfigUrl.from_env('TEST_CONFIG')
+# => "mysql://username:password@localhost:666/test"
+```
+
+For more details, [read the spec](spec/getaround_utils/utils/config_url_spec.rb)
