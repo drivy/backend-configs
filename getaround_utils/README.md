@@ -49,6 +49,25 @@ require 'getaround_utils/railties/ougai'
 
 For more details, [read the spec](spec/getaround_utils/railties/ougai_spec.rb)
 
+## Engines
+
+### GetaroundUtils::Engine::Health
+
+Provides a `Rack` application to expose "health" endpoints (used by Shipit)
+
+- `/release_version`
+- `/commit_sha1`
+- `/migration_status`
+
+The engine can be mounted in a Rails application: **(`config/routes.rb`)**
+```ruby
+Rails.application.routes.draw do
+  # ...
+  mount GetaroundUtils::Engines::Health.engine, at: '/health'
+end
+```
+**This will generates `/health/release_version`, `/health/commit_sha1` and `/health/migration_status` endpoints**
+
 ## Mixins
 
 ### GetaroundUtils::Mixins::Loggable
