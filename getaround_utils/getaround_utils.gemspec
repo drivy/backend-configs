@@ -17,6 +17,10 @@ Gem::Specification.new do |gem|
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   end
 
+  gem.metadata = {
+    "changelog_uri" => "https://github.com/drivy/backend-configs/blob/main/getaround_utils/CHANGELOG.md",
+  }
+
   # Development dependencies
   gem.add_development_dependency 'getaround-rubocop', '= 0.2.11'
   gem.add_development_dependency 'irb', '~> 1.15'
