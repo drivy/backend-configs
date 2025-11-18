@@ -2,6 +2,16 @@
 
 ### Added
 
+- `GetaroundUtils::Utils::HandleError` ([#433](https://github.com/drivy/backend-configs/pull/433))
+    ```ruby
+    module MyApp::Errors
+      def self.handle(error, **)
+        GetaroundUtils::Utils::HandleError.notify_of(error, **) do |report|
+          report.grouping_hash = 'hello-world' # Bugsnag example
+        end
+      end
+    end
+    ```
 - `GetaroundUtils::Utils::ConfigUrl` ([#432](https://github.com/drivy/backend-configs/pull/432))
     ```ruby
     # FOO_URL="redis://foo@localhost:666/10"
