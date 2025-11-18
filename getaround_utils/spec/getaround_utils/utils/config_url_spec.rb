@@ -8,6 +8,8 @@ RSpec.describe GetaroundUtils::Utils::ConfigUrl do
 
     let(:mocked_env) do
       {
+        'TEST_NO_USERNAME_URL' => "mysql://localhost:666/test",
+        'TEST_NO_USERNAME_PASSWORD' => "used-pwd",
         'TEST_URL_PWD_URL' => "mysql://user1:my-pwd@localhost:666/test",
         'TEST_URL_PWD_PASSWORD' => "not-used-because-present-in-url",
         'TEST_BLANK_PWD_URL' => "mysql://user2:@localhost:666/test",
@@ -19,13 +21,10 @@ RSpec.describe GetaroundUtils::Utils::ConfigUrl do
         'TEST_NO_HOST_NO_AUTH_URL' => "sqlite:///db/test.db",
         'TEST_NO_HOST_URL' => "sqlite://user5@/db/test.db",
         'TEST_NO_HOST_PASSWORD' => "pwd",
-        'TEST_NO_USERNAME_URL' => "mysql://localhost:666/test",
-        'TEST_NO_USERNAME_PASSWORD' => "used-pwd",
       }
     end
 
     before do
-      allow(ENV).to receive(:key?).and_call_original
       allow(ENV).to receive(:fetch).and_call_original
       allow(ENV).to receive(:fetch).with("#{config_name}_URL", any_args).and_wrap_original do |_, *args, &blk|
         mocked_env.fetch(*args, &blk)
@@ -33,13 +32,15 @@ RSpec.describe GetaroundUtils::Utils::ConfigUrl do
       allow(ENV).to receive(:fetch).with("#{config_name}_PASSWORD", any_args).and_wrap_original do |_, *args, &blk|
         mocked_env.fetch(*args, &blk)
       end
-      allow(ENV).to receive(:key?).with("#{config_name}_PASSWORD").and_return(mocked_env.key?("#{config_name}_PASSWORD"))
     end
 
     context 'with pwd variable but no username in base url' do
       let(:config_name) { 'TEST_NO_USERNAME' }
 
-      it { expect { subject }.to raise_error(URI::InvalidURIError, /password component depends user component/) }
+      it 'computes the pwd in the base url' do
+        expect(subject).to be_a ::URI::Generic
+        expect(subject.to_s).to eq "mysql://:used-pwd@localhost:666/test"
+      end
     end
 
     context 'when pwd is already present in base url' do
@@ -127,8 +128,7 @@ RSpec.describe GetaroundUtils::Utils::ConfigUrl do
 
         context 'with a pwd variable matching' do
           before do
-            allow(ENV).to receive(:key?).with('UNKNOWN_CONFIG_PASSWORD').and_return(true)
-            allow(ENV).to receive(:fetch).with('UNKNOWN_CONFIG_PASSWORD').and_return('mocked-pwd')
+            allow(ENV).to receive(:fetch).with('UNKNOWN_CONFIG_PASSWORD', any_args).and_return('mocked-pwd')
           end
 
           it 'computes the pwd in the fallback value' do
@@ -141,7 +141,10 @@ RSpec.describe GetaroundUtils::Utils::ConfigUrl do
           context 'with no username in fallback value' do
             let(:fallback_value) { 'postgresql://localhost:666/foo' }
 
-            it { expect { subject }.to raise_error(URI::InvalidURIError, /password component depends user component/) }
+            it 'computes the pwd in the base url' do
+              expect(subject).to be_a ::URI::Generic
+              expect(subject.to_s).to eq "postgresql://:mocked-pwd@localhost:666/foo"
+            end
 
             it_behaves_like 'with nil fallback'
           end
