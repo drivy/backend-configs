@@ -142,3 +142,27 @@ GetaroundUtils::Utils::ConfigUrl.from_env('TEST_CONFIG')
 ```
 
 For more details, [read the spec](spec/getaround_utils/utils/config_url_spec.rb)
+
+### GetaroundUtils::Utils::HandleError
+
+Allows to easily notify our error provider by providing context metadata as keyword arguments.
+
+*If there is no error provider defined, a `debug` message will be logged using `GetaroundUtils::Mixins::Loggable`*
+
+```ruby
+module MyApp::Errors
+  def self.handle(error, **)
+    GetaroundUtils::Utils::HandleError.notify_of(error, **) do |event|
+      event.grouping_hash = 'hello-world' # Bugsnag example
+    end
+  end
+end
+
+begin
+  raise 'woopsie'
+rescue StandardError => e
+  MyApp::Errors.handle(e, foo: 'bar', baz: 42)
+end
+```
+
+For more details, [read the spec](spec/getaround_utils/utils/handle_error_spec.rb)
