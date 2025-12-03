@@ -92,7 +92,7 @@ GEM
     crass (1.0.6)
     date (3.4.1)
     diff-lcs (1.6.2)
-    dotenv (3.1.8)
+    dotenv (3.2.0)
     drb (2.2.3)
     erb (5.0.2)
     erubi (1.13.1)
@@ -293,7 +293,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  dotenv (~> 3.1.8)
+  dotenv (~> 3.2.0)
   getaround-rubocop (= 0.2.11)
   getaround_utils!
   irb (~> 1.15)
