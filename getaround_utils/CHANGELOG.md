@@ -1,3 +1,7 @@
+## [0.3.0] 2026-01-22
+- Update Ruby to 4.0.1
+- Update dependencies
+
 ## [0.2.38] 2025-11-19
 
 ### Added
@@ -19,7 +23,7 @@
     # BAR_URL="whatever://bar:used-pwd@localhost:666/42"
     # BAR_PASSWORD="not-used-pwd"
     # ENV_TEST_NUMBER=1
-    
+
     GetaroundUtils::Utils::ConfigUrl
       .from_env('FOO')
       .tap { |uri| uri.path += ENV['ENV_TEST_NUMBER'] }

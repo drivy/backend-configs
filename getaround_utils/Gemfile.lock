@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    getaround_utils (0.2.38)
+    getaround_utils (0.3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -99,7 +99,7 @@ GEM
     drb (2.2.3)
     erb (6.0.1)
     erubi (1.13.1)
-    getaround-rubocop (0.2.11)
+    getaround-rubocop (0.3.1)
       relaxed-rubocop (~> 2.5)
       rubocop (~> 1.0)
       rubocop-performance (~> 1.0)
@@ -135,7 +135,7 @@ GEM
     marcel (1.0.4)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (5.25.5)
+    minitest (5.27.0)
     net-imap (0.5.8)
       date
       net-protocol
@@ -300,7 +300,7 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv (~> 3.2.0)
-  getaround-rubocop (= 0.2.11)
+  getaround-rubocop (= 0.3.1)
   getaround_utils!
   irb (~> 1.15)
   lograge (~> 0.14.0)
@@ -315,4 +315,4 @@ DEPENDENCIES
   webmock (~> 3.25)
 
 BUNDLED WITH
-   2.4.22
+  4.0.4

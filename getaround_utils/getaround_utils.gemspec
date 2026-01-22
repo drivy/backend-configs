@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   }
 
   # Development dependencies
-  gem.add_development_dependency 'getaround-rubocop', '= 0.2.11'
+  gem.add_development_dependency 'getaround-rubocop', '= 0.3.1'
   gem.add_development_dependency 'irb', '~> 1.15'
   gem.add_development_dependency 'rake', '~> 13.2'
   gem.add_development_dependency 'rspec', '~> 3.13'
