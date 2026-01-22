@@ -1,16 +1,28 @@
 version: 2
 updates:
-- package-ecosystem: "bundler"
-  directory: "/getaround-rubocop"
-  schedule:
-    interval: "daily"
-  open-pull-requests-limit: 99
-  assignees:
-  - godric
-- package-ecosystem: "bundler"
-  directory: "/getaround_utils"
-  schedule:
-    interval: "daily"
-  open-pull-requests-limit: 99
-  assignees:
-  - godric
+  - package-ecosystem: "bundler"
+    directory: "/getaround-rubocop"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 99
+    assignees:
+      - godric
+    groups:
+      rubocop:
+        patterns:
+          - "rubocop*"
+    labels:
+      - dependencies
+      - ruby
+      - getaround-rubocop
+  - package-ecosystem: "bundler"
+    directory: "/getaround_utils"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 99
+    assignees:
+      - godric
+    labels:
+      - dependencies
+      - ruby
+      - getaround_utils
