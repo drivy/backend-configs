@@ -31,7 +31,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 3.25'
 
   # Functional (optional) dependencies
-  gem.add_development_dependency 'dotenv', '~> 3.1.8'
+  gem.add_development_dependency 'dotenv', '~> 3.2.0'
   gem.add_development_dependency 'lograge', '~> 0.14.0'
   gem.add_development_dependency 'ougai', '~> 2.0'
   gem.add_development_dependency 'rack', '> 2.2'
