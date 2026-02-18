@@ -1,3 +1,6 @@
+## [0.3.1] 2026-02-18
+- In `GetaroundUtils::Engines::Health` ignore Heroku, add ArgoCD
+
 ## [0.3.0] 2026-01-22
 - Update Ruby to 4.0.1
 - Update dependencies
