@@ -14,11 +14,11 @@ module GetaroundUtils::Engines::Health
   UNDEFINED = 'N/A'
 
   def self.release_version
-    ENV['HEROKU_RELEASE_VERSION'] || ENV['PORTER_STACK_REVISION'] || ENV['PORTER_POD_REVISION']
+    ENV['PORTER_STACK_REVISION'] || ENV['PORTER_POD_REVISION'] || ENV['ARGOCD_APP_REVISION']
   end
 
   def self.commit_sha1
-    ENV['HEROKU_SLUG_COMMIT'] || ENV['COMMIT_SHA1']
+    ENV['COMMIT_SHA1']
   end
 
   def self.needs_migration?

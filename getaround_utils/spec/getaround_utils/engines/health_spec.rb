@@ -7,24 +7,20 @@ RSpec.describe GetaroundUtils::Engines::Health do
   describe '.release_version' do
     subject { described_class.release_version }
 
-    let(:heroku_release_version)  { 'heroku-release-version' }
     let(:porter_stack_revision)   { 'porter-stack-revision' }
     let(:porter_pod_revision)     { 'porter-pod-revision' }
+    let(:argocd_app_revision)     { 'argocd-pod-revision' }
 
     before do
       allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with('HEROKU_RELEASE_VERSION').and_return(heroku_release_version)
-      allow(ENV).to receive(:[]).with('PORTER_STACK_REVISION').and_return(porter_stack_revision)
-      allow(ENV).to receive(:[]).with('PORTER_POD_REVISION').and_return(porter_pod_revision)
-    end
-
-    context 'with HEROKU_RELEASE_VERSION' do
-      it { is_expected.to eq heroku_release_version }
+      allow(ENV).to receive(:[]).with('PORTER_STACK_REVISION').and_return(nil)
+      allow(ENV).to receive(:[]).with('PORTER_POD_REVISION').and_return(nil)
+      allow(ENV).to receive(:[]).with('ARGOCD_APP_REVISION').and_return(nil)
     end
 
     context 'with PORTER_STACK_REVISION' do
       before do
-        allow(ENV).to receive(:[]).with('HEROKU_RELEASE_VERSION').and_return(nil)
+        allow(ENV).to receive(:[]).with('PORTER_STACK_REVISION').and_return(porter_stack_revision)
       end
 
       it { is_expected.to eq porter_stack_revision }
@@ -32,20 +28,21 @@ RSpec.describe GetaroundUtils::Engines::Health do
 
     context 'with PORTER_POD_REVISION' do
       before do
-        allow(ENV).to receive(:[]).with('HEROKU_RELEASE_VERSION').and_return(nil)
-        allow(ENV).to receive(:[]).with('PORTER_STACK_REVISION').and_return(nil)
+        allow(ENV).to receive(:[]).with('PORTER_POD_REVISION').and_return(porter_pod_revision)
       end
 
       it { is_expected.to eq porter_pod_revision }
     end
 
-    context 'with no environment variables defined' do
+    context 'with ARGOCD_APP_REVISION' do
       before do
-        allow(ENV).to receive(:[]).with('HEROKU_RELEASE_VERSION').and_return(nil)
-        allow(ENV).to receive(:[]).with('PORTER_STACK_REVISION').and_return(nil)
-        allow(ENV).to receive(:[]).with('PORTER_POD_REVISION').and_return(nil)
+        allow(ENV).to receive(:[]).with('ARGOCD_APP_REVISION').and_return(argocd_app_revision)
       end
 
+      it { is_expected.to eq argocd_app_revision }
+    end
+
+    context 'with no environment variables defined' do
       it { is_expected.to be_nil }
     end
   end
@@ -53,33 +50,21 @@ RSpec.describe GetaroundUtils::Engines::Health do
   describe '.commit_sha1' do
     subject { described_class.commit_sha1 }
 
-    let(:heroku_slug_commit)  { 'heroku-slug-commit' }
-    let(:commit_sha1)         { 'commit-sha1' }
+    let(:commit_sha1) { 'commit-sha1' }
 
     before do
       allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with('HEROKU_SLUG_COMMIT').and_return(heroku_slug_commit)
-      allow(ENV).to receive(:[]).with('COMMIT_SHA1').and_return(commit_sha1)
-    end
-
-    context 'with HEROKU_SLUG_COMMIT' do
-      it { is_expected.to eq heroku_slug_commit }
+      allow(ENV).to receive(:[]).with('COMMIT_SHA1').and_return(nil)
     end
 
     context 'with COMMIT_SHA1' do
       before do
-        allow(ENV).to receive(:[]).with('HEROKU_SLUG_COMMIT').and_return(nil)
+        allow(ENV).to receive(:[]).with('COMMIT_SHA1').and_return(commit_sha1)
       end
-
       it { is_expected.to eq commit_sha1 }
     end
 
     context 'with no environment variables defined' do
-      before do
-        allow(ENV).to receive(:[]).with('HEROKU_SLUG_COMMIT').and_return(nil)
-        allow(ENV).to receive(:[]).with('COMMIT_SHA1').and_return(nil)
-      end
-
       it { is_expected.to be_nil }
     end
   end
