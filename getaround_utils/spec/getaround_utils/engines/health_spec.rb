@@ -61,6 +61,7 @@ RSpec.describe GetaroundUtils::Engines::Health do
       before do
         allow(ENV).to receive(:[]).with('COMMIT_SHA1').and_return(commit_sha1)
       end
+
       it { is_expected.to eq commit_sha1 }
     end
 
