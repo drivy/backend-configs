@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'i18n'
 require 'getaround_utils/i18n_backend/flat_keys'
 
 describe GetaroundUtils::I18nBackend::FlatKeys do
-  subject{ described_class.new }
+  subject{
+    klass = Class.new(I18n.backend.class)
+    klass.include(described_class)
+    klass.new
+  }
 
   describe '#expand_dot_keys' do
     it 'expands keys containing a dot' do

@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 require "active_support"
-require 'i18n/backend/transliterator'
-require "i18n/backend/simple"
 
 module GetaroundUtils; end
 module GetaroundUtils::I18nBackend; end
 
-class GetaroundUtils::I18nBackend::FlatKeys < I18n::Backend::Simple
+module GetaroundUtils::I18nBackend::FlatKeys
   def store_translations(locale, data, options = {})
     expanded = expand_dot_keys(data)
     super(locale, expanded, options)
