@@ -1,3 +1,6 @@
+## [0.3.2] 2026-02-27
+- Add `GetaroundUtils::I18nBackend::FlatKeys` an I18n backend that supports flatten keys
+
 ## [0.3.1] 2026-02-18
 - In `GetaroundUtils::Engines::Health` ignore Heroku, add ArgoCD
 
