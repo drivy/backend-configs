@@ -1,3 +1,25 @@
+## Unreleased
+
+### Breaking Changes
+
+- `GetaroundUtils::Utils::ConfigUrl.from_env` ([#460](https://github.com/drivy/backend-configs/pull/460))
+  - Add `_USERNAME` variable support
+  - Make sub variables overriding base url segments
+  ```dotenv
+  TEST_URL="whatever://foo:my-pwd@localhost:666/test"
+  TEST_USERNAME="bar"
+  TEST_PASSWORD="new-pwd"
+  ```
+  ```ruby
+  # BEFORE (<= 0.3.3)
+  GetaroundUtils::Utils::ConfigUrl.from_env('TEST')
+  # => <URI::Generic whatever://foo:my-pwd@localhost:666/test>
+    
+  # AFTER (> 0.3.3)
+  GetaroundUtils::Utils::ConfigUrl.from_env('TEST')
+  # => <URI::Generic whatever://bar:new-pwd@localhost:666/test>
+  ```
+
 ## [0.3.3] 2026-02-27
 - `GetaroundUtils::I18nBackend::FlatKeys` should be a module
 
