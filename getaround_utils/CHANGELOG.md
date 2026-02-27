@@ -1,4 +1,7 @@
-## [0.3.2] 2026-02-27
+## [0.3.3] 2026-02-27
+- `GetaroundUtils::I18nBackend::FlatKeys` should be a module
+
+## [0.3.2] 2026-02-27 - YANKED
 - Add `GetaroundUtils::I18nBackend::FlatKeys` an I18n backend that supports flatten keys
 
 ## [0.3.1] 2026-02-18
