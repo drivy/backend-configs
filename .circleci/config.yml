@@ -23,6 +23,8 @@ jobs:
   test-getaround_utils:
     docker:
       - image: cimg/ruby:4.0.1
+    environment:
+      CI_WORKING_DIR: /tmp/build/getaround_utils
     working_directory: /tmp/build/getaround_utils
     steps:
       - checkout:
