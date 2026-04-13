@@ -1,3 +1,9 @@
+## Unreleased
+
+### Fixed
+
+- `GetaroundUtils::Utils::HandleError`: notify Bugsnag only when `BUGSNAG_API_KEY` is configured, otherwise log.
+
 ## [0.3.4] 2026-02-27
 
 ### Breaking Changes
