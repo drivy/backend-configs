@@ -12,15 +12,15 @@ RSpec.describe GetaroundUtils::Utils::HandleError do
     end
 
     shared_context 'with Bugsnag defined' do
+      let(:api_key) { 'my-api-key' }
       let(:bugsnag) { double }
       let(:event)   { double }
-      let(:env_api_key) { true }
+      let(:config)  { double(api_key:) }
 
       before do
-        allow(ENV).to receive(:key?).and_call_original
-        allow(ENV).to receive(:key?).with('BUGSNAG_API_KEY').and_return(env_api_key)
         allow(event).to receive(:add_metadata)
         allow(bugsnag).to receive(:notify).and_yield(event)
+        allow(bugsnag).to receive(:configuration).and_return(config)
         stub_const('Bugsnag', bugsnag)
       end
     end
@@ -50,8 +50,8 @@ RSpec.describe GetaroundUtils::Utils::HandleError do
         expect(event).not_to have_received(:add_metadata)
       end
 
-      context 'without environment api key' do
-        let(:env_api_key) { false }
+      context 'without configured api key' do
+        let(:api_key) { nil }
 
         it_behaves_like 'logs the handled error'
       end
@@ -94,8 +94,8 @@ RSpec.describe GetaroundUtils::Utils::HandleError do
           expect(event).to have_received(:add_metadata).with(:baz, { hello: 'world' })
         end
 
-        context 'without environment api key' do
-          let(:env_api_key) { false }
+        context 'without configured api key' do
+          let(:api_key) { nil }
 
           it_behaves_like 'logs the handled error with given metadata'
         end
