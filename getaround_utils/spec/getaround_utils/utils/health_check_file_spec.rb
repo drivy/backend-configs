@@ -41,8 +41,8 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
     end
   end
 
-  describe '#create!' do
-    subject { health_file.create! }
+  describe '#touch' do
+    subject { health_file.touch }
 
     include_context 'with clean filesystem'
 
@@ -53,12 +53,12 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
     end
   end
 
-  describe '#drop!' do
-    subject { health_file.drop! }
+  describe '#unlink' do
+    subject { health_file.unlink }
 
     include_context 'with clean filesystem'
 
-    before { health_file.create! }
+    before { health_file.touch }
 
     it 'removes the file' do
       expect(File.exist?(expected_file_path)).to be true
@@ -77,7 +77,7 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
     end
 
     context 'when file was already created' do
-      before { health_file.create! }
+      before { health_file.touch }
 
       it { is_expected.to be true }
     end
