@@ -11,7 +11,7 @@ module GetaroundUtils::Utils::HandleError
 
   # @see https://docs.bugsnag.com/platforms/ruby/rails/reporting-handled-errors/#sending-custom-diagnostics
   def self.notify_of(error, **metadata, &)
-    if defined?(::Bugsnag)
+    if defined?(::Bugsnag) && ::Bugsnag.configuration.api_key
       ::Bugsnag.notify(error) do |event|
         metadata.each do |name, value|
           if value.is_a?(Hash)
