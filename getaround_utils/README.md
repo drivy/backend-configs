@@ -209,8 +209,8 @@ Helper to easily create health check file used for Kubernetes Probes (Sidekiq, C
 SIDEKIQ_HEALTH_FILE = GetaroundUtils::Utils::HealthCheckFile.new('sidekiq')
 
 Sidekiq.configure_server do |config|
-  config.on(:startup) { SIDEKIQ_HEALTH_FILE.create! }
-  config.on(:shutdown) { SIDEKIQ_HEALTH_FILE.drop! }
+  config.on(:startup) { SIDEKIQ_HEALTH_FILE.create }
+  config.on(:shutdown) { SIDEKIQ_HEALTH_FILE.delete }
 end
 ```
 

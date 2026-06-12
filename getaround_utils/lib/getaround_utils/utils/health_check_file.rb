@@ -19,12 +19,12 @@ class GetaroundUtils::Utils::HealthCheckFile
     @path = @base_path.join(FILE_NAME)
   end
 
-  def touch
+  def create
     FileUtils.mkdir_p(@base_path)
     FileUtils.touch(@path)
   end
 
-  def unlink
+  def delete
     FileUtils.rm_f(@path)
   end
 

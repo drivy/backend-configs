@@ -41,8 +41,8 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
     end
   end
 
-  describe '#touch' do
-    subject { health_file.touch } # rubocop:disable Rails/SkipsModelValidations
+  describe '#create' do
+    subject { health_file.create }
 
     include_context 'with clean filesystem'
 
@@ -53,12 +53,12 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
     end
   end
 
-  describe '#unlink' do
-    subject { health_file.unlink }
+  describe '#delete' do
+    subject { health_file.delete }
 
     include_context 'with clean filesystem'
 
-    before { health_file.touch } # rubocop:disable Rails/SkipsModelValidations
+    before { health_file.create }
 
     it 'removes the file' do
       expect(File.exist?(expected_file_path)).to be true
@@ -77,7 +77,7 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
     end
 
     context 'when file was already created' do
-      before { health_file.touch } # rubocop:disable Rails/SkipsModelValidations
+      before { health_file.create }
 
       it { is_expected.to be true }
     end
