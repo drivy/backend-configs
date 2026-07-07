@@ -4,6 +4,17 @@
 
 - `GetaroundUtils::Utils::HandleError`: notify Bugsnag only when `BUGSNAG_API_KEY` is configured, otherwise log.
 
+### Added
+
+- `GetaroundUtils::Utils::HealthCheckFile` ([#481](https://github.com/drivy/backend-configs/pull/481))
+    ```ruby
+    SIDEKIQ_HEALTH_FILE = GetaroundUtils::Utils::HealthCheckFile.new('sidekiq')
+    Sidekiq.configure_server do |config|
+      config.on(:startup) { SIDEKIQ_HEALTH_FILE.create }
+      config.on(:shutdown) { SIDEKIQ_HEALTH_FILE.delete }
+    end
+    ```
+
 ## [0.3.4] 2026-02-27
 
 ### Breaking Changes

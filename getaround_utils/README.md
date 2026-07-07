@@ -199,3 +199,19 @@ end
 ```
 
 For more details, [read the spec](spec/getaround_utils/utils/handle_error_spec.rb)
+
+### GetaroundUtils::Utils::HealthCheckFile
+
+Helper to easily create health check file used for Kubernetes Probes (Sidekiq, Captur, etc...)
+
+*Example in `config/initializers/sidekiq.rb`*
+```ruby
+SIDEKIQ_HEALTH_FILE = GetaroundUtils::Utils::HealthCheckFile.new('sidekiq')
+
+Sidekiq.configure_server do |config|
+  config.on(:startup) { SIDEKIQ_HEALTH_FILE.create }
+  config.on(:shutdown) { SIDEKIQ_HEALTH_FILE.delete }
+end
+```
+
+For more details, [read the spec](spec/getaround_utils/utils/health_check_file_spec.rb)
