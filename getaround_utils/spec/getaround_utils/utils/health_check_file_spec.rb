@@ -1,22 +1,26 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tmpdir'
 
 RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
   subject(:health_file) { described_class.new(name) }
 
   let(:name) { 'dummy' }
 
-  let(:root_path) { Pathname.new(ENV.fetch('CI_WORKING_DIR', '/')) }
+  let(:root_path) { Pathname.new('/') }
   let(:expected_base_path) { root_path.join('tmp', name) }
   let(:expected_file_path) { expected_base_path.join(described_class::FILE_NAME) }
 
-  shared_context 'with clean filesystem' do
-    around do |example|
-      FileUtils.rm_rf(expected_base_path)
-      example.run
-      FileUtils.rm_rf(expected_base_path)
-    end
+  # Other specs boot a Rails application: hide it, so that each context sets the root it expects.
+  before { hide_const('Rails') }
+
+  shared_context 'with Rails rooted in a temporary directory' do
+    let(:root_path) { Pathname.new(Dir.mktmpdir) }
+
+    before { stub_const('Rails', double(root: root_path)) }
+
+    after { FileUtils.rm_rf(root_path) }
   end
 
   context 'with invalid name' do
@@ -44,7 +48,7 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
   describe '#create' do
     subject { health_file.create }
 
-    include_context 'with clean filesystem'
+    include_context 'with Rails rooted in a temporary directory'
 
     it 'creates the file' do
       expect(File.exist?(expected_file_path)).to be false
@@ -56,7 +60,7 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
   describe '#delete' do
     subject { health_file.delete }
 
-    include_context 'with clean filesystem'
+    include_context 'with Rails rooted in a temporary directory'
 
     before { health_file.create }
 
@@ -70,7 +74,7 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
   describe '#refresh' do
     subject { health_file.refresh }
 
-    include_context 'with clean filesystem'
+    include_context 'with Rails rooted in a temporary directory'
 
     context 'when file is not yet created' do
       it { is_expected.to be false }
@@ -98,7 +102,7 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
   describe '#exists?' do
     subject { health_file.exists? }
 
-    include_context 'with clean filesystem'
+    include_context 'with Rails rooted in a temporary directory'
 
     context 'when file is not yet created' do
       it { is_expected.to be false }
