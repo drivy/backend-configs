@@ -1,3 +1,9 @@
+## Unreleased
+
+### Breaking Changes
+
+- Require Ruby >= 4.0
+
 ## [0.3.5] 2026-07-07
 
 ### Fixed
