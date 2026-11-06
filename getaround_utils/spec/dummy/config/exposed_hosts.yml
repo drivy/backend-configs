@@ -1,0 +1,7 @@
+test:
+  default_url_options: { port: 3000 }
+  hosts:
+    - { host: <%= ENV.fetch('DUMMY_PRIVATE_HOST') %>, visibility: private }
+    - { host: admin.example.com, visibility: private, group: internal, default_url_options: { port: 3001 } }
+    - { host: www.example.com, visibility: public }
+    - { host: api.example.com, visibility: public, group: api }
