@@ -1,0 +1,8 @@
+test:
+  hosts:
+    - { host: <%= ENV.fetch('DUMMY_PRIVATE_HOST') %>, visibility: private }
+    - { host: admin.example.com, visibility: private, group: internal, port: 42 }
+    - { host: www.example.com, visibility: public }
+    - host: api.example.com
+      visibility: :public
+      group: :api
