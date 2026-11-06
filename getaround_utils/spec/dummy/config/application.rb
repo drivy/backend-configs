@@ -2,8 +2,13 @@
 
 require 'rails'
 require 'action_controller/railtie'
+require 'getaround_utils/railties/exposed_hosts'
 require 'getaround_utils/railties/lograge'
 require 'getaround_utils/railties/ougai'
+
+# Set before the application class, as `Dotenv.load` does in the applications,
+# to check that the ERB of config/exposed_hosts.yml sees it.
+ENV['DUMMY_PRIVATE_HOST'] = 'private.example.com'
 
 class DummyApplication < Rails::Application
   config.load_defaults 8.1
