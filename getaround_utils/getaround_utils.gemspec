@@ -36,5 +36,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'ougai', '~> 2.0'
   gem.add_development_dependency 'rack', '> 2.2'
   gem.add_development_dependency 'rails', '~> 7.0'
-  gem.add_development_dependency 'sidekiq', '> 7.0'
+  gem.add_development_dependency 'sidekiq', '~> 8.1'
 end
