@@ -12,6 +12,26 @@
       config.on(:beat) { SIDEKIQ_HEALTH_FILE.refresh }
     end
     ```
+- `GetaroundUtils::Railties::ExposedHosts`: declares the public and private hosts of an application and provides the `private_routes`, `default_host` and `host_constraint` routing helpers ([#492](https://github.com/drivy/backend-configs/pull/492))
+    ```ruby
+    # config/application.rb
+    require 'getaround_utils/railties/exposed_hosts'
+    # ...
+    config.hosts += config.exposed_hosts.hosts
+    ```
+    ```yaml
+    # config/exposed_hosts.yml
+    production:
+      hosts:
+        - { host: app.example.com, visibility: private }
+        - { host: www.example.com, visibility: public }
+    ```
+    ```ruby
+    # config/routes.rb
+    private_routes { get '/admin', to: 'admin#index' }
+    default_host(:public) { post '/webhooks/github', to: 'webhooks#github' }
+    host_constraint(:public) { get '/signup', to: 'signups#new' }
+    ```
 
 ## [0.3.5] 2026-07-07
 
