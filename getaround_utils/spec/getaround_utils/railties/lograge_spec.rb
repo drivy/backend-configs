@@ -40,7 +40,7 @@ describe GetaroundUtils::Railties::Lograge, type: :controller do
           end
 
           def redir
-            redirect_to('http://next.com')
+            redirect_to('http://next.com', allow_other_host: true)
           end
         end
 
