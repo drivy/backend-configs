@@ -27,6 +27,13 @@ class GetaroundUtils::Utils::HealthCheckFile
     FileUtils.rm_f(@path)
   end
 
+  def refresh
+    File.utime(nil, nil, @path)
+    true
+  rescue Errno::ENOENT
+    false
+  end
+
   def exists?
     File.exist?(@path)
   end
