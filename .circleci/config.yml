@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
 
   test-getaround-rubocop:
@@ -44,8 +44,6 @@ jobs:
 
 
 workflows:
-  version: 2
-
   test-and-deploy:
     jobs:
       - test-getaround-rubocop
