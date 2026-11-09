@@ -3,7 +3,7 @@ jobs:
 
   test-getaround-rubocop:
     docker:
-      - image: cimg/ruby:4.0.1
+      - image: cimg/ruby:4.0.6
     working_directory: /tmp/build/getaround-rubocop
     steps:
       - checkout:
