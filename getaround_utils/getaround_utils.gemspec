@@ -32,7 +32,7 @@ Gem::Specification.new do |gem|
 
   # Functional (optional) dependencies
   gem.add_development_dependency 'dotenv', '~> 3.2.0'
-  gem.add_development_dependency 'lograge', '~> 0.14.0'
+  gem.add_development_dependency 'lograge', '~> 0.15.1'
   gem.add_development_dependency 'ougai', '~> 2.0'
   gem.add_development_dependency 'rack', '> 2.2'
   gem.add_development_dependency 'rails', '~> 8.1'
