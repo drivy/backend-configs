@@ -4,6 +4,15 @@
 
 - Require Ruby >= 4.0
 
+### Added
+
+- `GetaroundUtils::Utils::HealthCheckFile#refresh`: update the file modification time, without recreating it
+    ```ruby
+    Sidekiq.configure_server do |config|
+      config.on(:beat) { SIDEKIQ_HEALTH_FILE.refresh }
+    end
+    ```
+
 ## [0.3.5] 2026-07-07
 
 ### Fixed

@@ -67,6 +67,34 @@ RSpec.describe GetaroundUtils::Utils::HealthCheckFile do
     end
   end
 
+  describe '#refresh' do
+    subject { health_file.refresh }
+
+    include_context 'with clean filesystem'
+
+    context 'when file is not yet created' do
+      it { is_expected.to be false }
+
+      it 'does not create the file' do
+        subject
+        expect(File.exist?(expected_file_path)).to be false
+      end
+    end
+
+    context 'when file was already created' do
+      before do
+        health_file.create
+        File.utime(Time.now.utc - 120, Time.now.utc - 120, expected_file_path)
+      end
+
+      it { is_expected.to be true }
+
+      it 'refreshes the modification time' do
+        expect { subject }.to change { File.mtime(expected_file_path) }.to be_within(5).of(Time.now.utc)
+      end
+    end
+  end
+
   describe '#exists?' do
     subject { health_file.exists? }
 

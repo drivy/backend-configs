@@ -210,8 +210,13 @@ SIDEKIQ_HEALTH_FILE = GetaroundUtils::Utils::HealthCheckFile.new('sidekiq')
 
 Sidekiq.configure_server do |config|
   config.on(:startup) { SIDEKIQ_HEALTH_FILE.create }
+  config.on(:beat) { SIDEKIQ_HEALTH_FILE.refresh }
   config.on(:shutdown) { SIDEKIQ_HEALTH_FILE.delete }
 end
 ```
+
+`refresh` only updates the modification time of an existing file. Sidekiq fires `:beat` every 10 seconds after a
+successful Redis round trip, so a liveness probe can check the file age to detect a frozen process or a lost Redis
+connection, e.g. `find tmp/sidekiq/health_check_file -mmin -1 | grep -q .`
 
 For more details, [read the spec](spec/getaround_utils/utils/health_check_file_spec.rb)
