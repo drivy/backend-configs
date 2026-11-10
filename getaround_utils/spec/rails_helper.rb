@@ -5,19 +5,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 
 require 'sidekiq'
-require 'rails'
-require 'action_controller/railtie'
-require 'getaround_utils/railties/lograge'
-require 'getaround_utils/railties/ougai'
-
-class DummyApplication < Rails::Application
-  config.load_defaults 6.0
-  config.eager_load = false
-  config.log_level = :info
-  config.monitorable_log_thresholds = {}
-end
-
-Rails.application.initialize!
+require_relative 'dummy/config/environment'
 
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
