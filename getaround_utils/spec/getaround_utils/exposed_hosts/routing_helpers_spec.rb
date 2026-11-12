@@ -2,9 +2,11 @@
 
 require 'rails_helper'
 
+# Runs against the routes of the spec DummyApplication: see spec/dummy/config/routes.rb.
 RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
   let(:url_helpers) { Rails.application.routes.url_helpers }
 
+  # Draws a new route set against another section than that of the dummy application.
   def draw_routes_with(entries, **section, &)
     original = Rails.application.config.exposed_hosts
     Rails.application.config.exposed_hosts = GetaroundUtils::ExposedHosts::Configuration.new({ hosts: entries, **section })
@@ -29,6 +31,7 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
       end
     end
 
+    # The hosts, declared or not, on which the route set serves the constrained route.
     def served_hosts(route_set)
       [*entries.pluck(:host), 'undeclared.example.com'].select do |host|
         Rack::MockRequest.new(route_set).get('/constrained', 'HTTP_HOST' => host).status == 200
@@ -123,6 +126,7 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
     end
 
     it 'sets params[:host] to the declared host, whatever the host or the query string of the request says' do
+      # admin.example.com is a private host, but not the first one, which private_routes declares.
       get 'http://admin.example.com/private?host=evil.example.com'
       expect(response.parsed_body['host']).to eq(Rails.application.config.exposed_hosts.private_host)
     end

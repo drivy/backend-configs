@@ -6,6 +6,8 @@ module GetaroundUtils; end
 
 module GetaroundUtils::ExposedHosts; end
 
+# The section of an environment in config/exposed_hosts.yml: its `hosts`, validated and turned into entries, and its
+# optional `default_url_options`, which every entry merges its own over. It has no other key.
 class GetaroundUtils::ExposedHosts::Configuration
   class Error < StandardError; end
 
@@ -26,6 +28,9 @@ class GetaroundUtils::ExposedHosts::Configuration
     @hosts = @entries.map(&:host).uniq.freeze
   end
 
+  # The entries of the visibility matching the metadata, in the file's order, e.g. `entries(:private, group: 'api')`.
+  # Without visibility, whatever their visibility; without metadata, every entry of the visibility.
+  # Raises a KeyError when there is none.
   def entries(visibility = nil, **metadata)
     unless visibility.nil? || GetaroundUtils::ExposedHosts::Entry.valid_visibility?(visibility)
       raise ArgumentError, "visibility must be public or private, got #{visibility.inspect}"
@@ -38,14 +43,17 @@ class GetaroundUtils::ExposedHosts::Configuration
       .freeze
   end
 
+  # The first of these entries, e.g. `entry(:public, group: 'api')`. Raises a KeyError when there is none.
   def entry(...)
     entries(...).first
   end
 
+  # The host of the first public entry matching the metadata, e.g. `public_host(group: 'api')`.
   def public_host(**metadata)
     entry(:public, **metadata).host
   end
 
+  # The host of the first private entry matching the metadata.
   def private_host(**metadata)
     entry(:private, **metadata).host
   end

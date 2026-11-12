@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# The spec DummyApplication loads the railtie, with a configuration tailored for this spec:
+# see spec/dummy/config.
 RSpec.describe GetaroundUtils::Railties::ExposedHosts do
   let(:config) { Rails.application.config }
 

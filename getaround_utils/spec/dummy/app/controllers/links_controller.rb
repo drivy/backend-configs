@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Renders params[:host] and the URL of every named route, as a controller generates them during the request.
 class LinksController < ActionController::API
   def show
     render json: {

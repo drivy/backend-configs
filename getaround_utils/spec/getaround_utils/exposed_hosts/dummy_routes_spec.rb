@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# Shows where the routing helpers point the URLs they generate, on the routes of the spec DummyApplication: see
+# spec/dummy/config/routes.rb. Each of its routes renders the URLs that LinksController generates during the request.
 RSpec.describe 'Routes of the dummy application', type: :request do
   def urls
     response.parsed_body['urls']
