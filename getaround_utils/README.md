@@ -78,8 +78,6 @@ exposed.entries                   # every entry, in the file's order, with its m
 exposed.entries(:private)         # the entries of a visibility, :public or :private, in the file's order
 exposed.entries(group: :api)      # the entries matching the metadata, whatever their visibility
 exposed.entry(:public)            # the first of these entries
-exposed.public_host               # the host of the first public entry
-exposed.private_host              # the same, for the private entries
 exposed.default_url_options       # => { protocol: 'https' } — the URL options of the environment
 
 entry = exposed.entries.first     # a GetaroundUtils::ExposedHosts::Entry
@@ -98,7 +96,7 @@ legacy.metadata                   # => { group: 'legacy' }
 legacy.match?(group: :legacy)     # => true — a Symbol and a String with the same name are equal
 ```
 
-`entries`, `entry`, `public_host` and `private_host` take an optional metadata filter, and then only consider the entries that match it: `entries(:private, group: :api)`, `private_host(group: :api)`. A Symbol and a String with the same name are equal, so `group: :api` matches the `group: api` of a YAML entry; other values compare strictly.
+`entries` and `entry` take an optional visibility and metadata filter, and then only consider the entries that match it: `entries(:private, group: :api)`, `entry(:public, group: :api)`. A Symbol and a String with the same name are equal, so `group: :api` matches the `group: api` of a YAML entry; other values compare strictly.
 
 `Entry#match?` takes the same filter as keywords, and a `host`: `match?(host: authority, visibility: :private, group: :api)`. A criterion left out matches any entry, while a `nil` host, that of a request without a Host header, matches none.
 

@@ -2,8 +2,8 @@
 
 Rails.application.configure do
   # Read here to check that the hosts are loaded before the environment files.
-  config.x.private_host = config.exposed_hosts.private_host
-  config.x.public_host = config.exposed_hosts.public_host
+  config.x.private_host = config.exposed_hosts.entry(:private).host
+  config.x.public_host = config.exposed_hosts.entry(:public).host
 
   # Keeps the routing errors of the specs that expect a 404 out of the suite's output.
   config.action_dispatch.log_rescued_responses = false

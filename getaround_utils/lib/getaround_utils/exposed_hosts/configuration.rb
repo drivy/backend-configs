@@ -48,16 +48,6 @@ class GetaroundUtils::ExposedHosts::Configuration
     entries(...).first
   end
 
-  # The host of the first public entry matching the metadata, e.g. `public_host(group: 'api')`.
-  def public_host(**metadata)
-    entry(:public, **metadata).host
-  end
-
-  # The host of the first private entry matching the metadata.
-  def private_host(**metadata)
-    entry(:private, **metadata).host
-  end
-
   private
 
   def build_entries(raw_entries)

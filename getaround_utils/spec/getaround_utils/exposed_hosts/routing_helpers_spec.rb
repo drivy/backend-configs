@@ -128,7 +128,7 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
     it 'sets params[:host] to the declared host, whatever the host or the query string of the request says' do
       # admin.example.com is a private host, but not the first one, which private_routes declares.
       get 'http://admin.example.com/private?host=evil.example.com'
-      expect(response.parsed_body['host']).to eq(Rails.application.config.exposed_hosts.private_host)
+      expect(response.parsed_body['host']).to eq(Rails.application.config.exposed_hosts.entry(:private).host)
     end
 
     context 'with metadata, given as a Symbol' do

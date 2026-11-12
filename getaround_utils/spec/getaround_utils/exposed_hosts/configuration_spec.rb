@@ -115,30 +115,6 @@ RSpec.describe GetaroundUtils::ExposedHosts::Configuration do
     end
   end
 
-  describe '#public_host' do
-    it 'is the host of the first public entry' do
-      expect(exposed_hosts.public_host).to eq('www.example.com')
-    end
-
-    context 'without public entry' do
-      let(:entries) { [{ host: 'private.example.com', visibility: 'private' }] }
-
-      it { expect { exposed_hosts.public_host }.to raise_error(KeyError, 'exposed_hosts: no public host is declared') }
-    end
-  end
-
-  describe '#private_host' do
-    it 'is the host of the first private entry' do
-      expect(exposed_hosts.private_host).to eq('private.example.com')
-    end
-
-    context 'without private entry' do
-      let(:entries) { [{ host: 'www.example.com', visibility: 'public' }] }
-
-      it { expect { exposed_hosts.private_host }.to raise_error(KeyError, 'exposed_hosts: no private host is declared') }
-    end
-  end
-
   describe '#default_url_options' do
     it 'is empty by default' do
       expect(exposed_hosts.default_url_options).to eq({})
@@ -200,8 +176,8 @@ RSpec.describe GetaroundUtils::ExposedHosts::Configuration do
     it 'picks the first entry, of the visibility if any, that matches it' do
       expect(exposed_hosts.entry(group: 'api').host).to eq('api-internal.example.com')
       expect(exposed_hosts.entry(:public, group: 'api').host).to eq('api.example.com')
-      expect(exposed_hosts.private_host(group: 'api')).to eq('api-internal.example.com')
-      expect(exposed_hosts.public_host(group: :api)).to eq('api.example.com')
+      expect(exposed_hosts.entry(:private, group: 'api').host).to eq('api-internal.example.com')
+      expect(exposed_hosts.entry(:public, group: :api).host).to eq('api.example.com')
     end
 
     it 'names the metadata when no entry matches it' do
@@ -210,7 +186,7 @@ RSpec.describe GetaroundUtils::ExposedHosts::Configuration do
     end
 
     it 'names the visibility and the metadata when no entry of the visibility matches it' do
-      expect { exposed_hosts.private_host(group: 'web') }
+      expect { exposed_hosts.entry(:private, group: 'web') }
         .to raise_error(KeyError, 'exposed_hosts: no private host matching {group: "web"} is declared')
     end
   end
