@@ -4,14 +4,14 @@ require 'spec_helper'
 require 'getaround_utils/exposed_hosts/entry'
 
 RSpec.describe GetaroundUtils::ExposedHosts::Entry do
-  subject(:entry) { described_class.new(host: 'www.example.com', visibility:, group: 'web') }
+  subject(:entry) { described_class.new(host: 'www.example.com', exposure:, group: 'web') }
 
-  let(:visibility) { :public }
+  let(:exposure) { :external }
 
   describe '.build' do
-    it 'takes the host and the visibility, and keeps any other key as metadata' do
-      expect(described_class.build({ host: 'www.example.com', visibility: 'public', group: 'web', port: 3000 }))
-        .to have_attributes(host: 'www.example.com', visibility: :public, metadata: { group: 'web', port: 3000 })
+    it 'takes the host and the exposure, and keeps any other key as metadata' do
+      expect(described_class.build({ host: 'www.example.com', exposure: 'external', group: 'web', port: 3000 }))
+        .to have_attributes(host: 'www.example.com', exposure: :external, metadata: { group: 'web', port: 3000 })
     end
 
     it 'refuses anything but a hash' do
@@ -19,24 +19,24 @@ RSpec.describe GetaroundUtils::ExposedHosts::Entry do
         .to raise_error(described_class::Error, 'expected a hash, got "www.example.com"')
     end
 
-    it 'requires the host and the visibility' do
+    it 'requires the host and the exposure' do
       expect { described_class.build({ group: 'web' }) }
-        .to raise_error(described_class::Error, 'missing required keys: host, visibility')
+        .to raise_error(described_class::Error, 'missing required keys: host, exposure')
     end
   end
 
   describe '.new' do
-    it 'turns the visibility into a symbol' do
-      expect(described_class.new(host: 'www.example.com', visibility: 'private').visibility).to eq(:private)
+    it 'turns the exposure into a symbol' do
+      expect(described_class.new(host: 'www.example.com', exposure: 'internal').exposure).to eq(:internal)
     end
 
     it 'keeps any other key as metadata' do
-      expect(described_class.new(host: 'www.example.com', visibility: :public).metadata).to eq({})
+      expect(described_class.new(host: 'www.example.com', exposure: :external).metadata).to eq({})
       expect(entry.metadata).to eq({ group: 'web' })
     end
 
     it 'freezes its host and its metadata' do
-      expect(described_class.new(host: +'www.example.com', visibility: :public, group: 'web'))
+      expect(described_class.new(host: +'www.example.com', exposure: :external, group: 'web'))
         .to have_attributes(host: be_frozen, metadata: be_frozen)
     end
 
@@ -48,31 +48,31 @@ RSpec.describe GetaroundUtils::ExposedHosts::Entry do
       'a host with a port' => ['www.example.com:80', 'host must not include a port, got "www.example.com:80"'],
     }.each do |description, (host, message)|
       context "with #{description}" do
-        it { expect { described_class.new(host:, visibility: 'public') }.to raise_error(described_class::Error, message) }
+        it { expect { described_class.new(host:, exposure: 'external') }.to raise_error(described_class::Error, message) }
       end
     end
 
     {
-      'a missing visibility' => [nil, 'visibility must be public or private, got nil'],
-      'a capitalized visibility' => ['Public', 'visibility must be public or private, got "Public"'],
-      'an unknown visibility' => ['internal', 'visibility must be public or private, got "internal"'],
-    }.each do |description, (visibility, message)|
+      'a missing exposure' => [nil, 'exposure must be external or internal, got nil'],
+      'a capitalized exposure' => ['External', 'exposure must be external or internal, got "External"'],
+      'an unknown exposure' => ['public', 'exposure must be external or internal, got "public"'],
+    }.each do |description, (exposure, message)|
       context "with #{description}" do
-        it { expect { described_class.new(host: 'www.example.com', visibility:) }.to raise_error(described_class::Error, message) }
+        it { expect { described_class.new(host: 'www.example.com', exposure:) }.to raise_error(described_class::Error, message) }
       end
     end
   end
 
-  context 'with a public visibility' do
-    it { is_expected.to be_public }
-    it { is_expected.not_to be_private }
+  context 'with an external exposure' do
+    it { is_expected.to be_external }
+    it { is_expected.not_to be_internal }
   end
 
-  context 'with a private visibility' do
-    let(:visibility) { :private }
+  context 'with an internal exposure' do
+    let(:exposure) { :internal }
 
-    it { is_expected.to be_private }
-    it { is_expected.not_to be_public }
+    it { is_expected.to be_internal }
+    it { is_expected.not_to be_external }
   end
 
   describe '#match?' do
@@ -80,11 +80,11 @@ RSpec.describe GetaroundUtils::ExposedHosts::Entry do
       expect(entry.match?).to be(true)
     end
 
-    it 'is true only when the host, the visibility and the metadata all match' do
-      expect(entry.match?(host: 'www.example.com', visibility: :public, group: 'web')).to be(true)
-      expect(entry.match?(host: 'api.example.com', visibility: :public, group: 'web')).to be(false)
-      expect(entry.match?(host: 'www.example.com', visibility: :private, group: 'web')).to be(false)
-      expect(entry.match?(host: 'www.example.com', visibility: :public, group: 'api')).to be(false)
+    it 'is true only when the host, the exposure and the metadata all match' do
+      expect(entry.match?(host: 'www.example.com', exposure: :external, group: 'web')).to be(true)
+      expect(entry.match?(host: 'api.example.com', exposure: :external, group: 'web')).to be(false)
+      expect(entry.match?(host: 'www.example.com', exposure: :internal, group: 'web')).to be(false)
+      expect(entry.match?(host: 'www.example.com', exposure: :external, group: 'api')).to be(false)
     end
 
     context 'with a host' do
@@ -105,22 +105,22 @@ RSpec.describe GetaroundUtils::ExposedHosts::Entry do
       end
     end
 
-    context 'with a visibility' do
-      it 'is true for the visibility of the entry, as a Symbol or a String' do
-        expect(entry.match?(visibility: :public)).to be(true)
-        expect(entry.match?(visibility: 'public')).to be(true)
+    context 'with an exposure' do
+      it 'is true for the exposure of the entry, as a Symbol or a String' do
+        expect(entry.match?(exposure: :external)).to be(true)
+        expect(entry.match?(exposure: 'external')).to be(true)
       end
 
-      it 'is false for the other visibility' do
-        expect(entry.match?(visibility: :private)).to be(false)
+      it 'is false for the other exposure' do
+        expect(entry.match?(exposure: :internal)).to be(false)
       end
 
-      it 'is false for an unknown visibility' do
-        expect(entry.match?(visibility: :internal)).to be(false)
+      it 'is false for an unknown exposure' do
+        expect(entry.match?(exposure: :public)).to be(false)
       end
 
-      it 'is false for a nil visibility, unlike a visibility left out' do
-        expect(entry.match?(visibility: nil)).to be(false)
+      it 'is false for a nil exposure, unlike an exposure left out' do
+        expect(entry.match?(exposure: nil)).to be(false)
       end
     end
 
@@ -147,7 +147,7 @@ RSpec.describe GetaroundUtils::ExposedHosts::Entry do
     end
 
     context 'with a Symbol value' do
-      subject(:entry) { described_class.new(host: 'www.example.com', visibility: :public, group: :web) }
+      subject(:entry) { described_class.new(host: 'www.example.com', exposure: :external, group: :web) }
 
       it 'takes a Symbol or a String with the same name' do
         expect(entry.match?(group: :web)).to be(true)
@@ -156,7 +156,7 @@ RSpec.describe GetaroundUtils::ExposedHosts::Entry do
     end
 
     context 'with a value that is neither a String nor a Symbol' do
-      subject(:entry) { described_class.new(host: 'www.example.com', visibility: :public, port: 3000) }
+      subject(:entry) { described_class.new(host: 'www.example.com', exposure: :external, port: 3000) }
 
       it 'compares it strictly' do
         expect(entry.match?(port: 3000)).to be(true)
@@ -166,8 +166,8 @@ RSpec.describe GetaroundUtils::ExposedHosts::Entry do
   end
 
   describe '#to_h' do
-    it 'puts the metadata next to the host and the visibility' do
-      expect(entry.to_h).to eq({ host: 'www.example.com', visibility: :public, group: 'web' })
+    it 'puts the metadata next to the host and the exposure' do
+      expect(entry.to_h).to eq({ host: 'www.example.com', exposure: :external, group: 'web' })
     end
   end
 end

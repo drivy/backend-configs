@@ -51,7 +51,7 @@ For more details, [read the spec](spec/getaround_utils/railties/ougai_spec.rb)
 
 ### GetaroundUtils::Railties::ExposedHosts
 
-Declares the hosts the application is exposed on, public or private, and provides routing helpers that restrict routes to some of these hosts or generate their URLs on one of them.
+Declares the hosts the application is exposed on, external or internal, and provides routing helpers that restrict routes to some of these hosts or generate their URLs on one of them.
 ```ruby
 # config/application.rb
 require 'getaround_utils/railties/exposed_hosts'
@@ -60,44 +60,44 @@ require 'getaround_utils/railties/exposed_hosts'
 # config/exposed_hosts.yml
 production:
   hosts:
-    - { host: app.example.com, visibility: private }
-    - { host: www.example.com, visibility: public }
-    - { host: <%= ENV.fetch('LEGACY_HOST') %>, visibility: public, group: legacy }
+    - { host: app.example.com, exposure: internal }
+    - { host: www.example.com, exposure: external }
+    - { host: <%= ENV.fetch('LEGACY_HOST') %>, exposure: external, group: legacy }
 ```
 
 - Each environment lists its hosts under `hosts`. It has no other key.
-- Each entry is validated: `host` (an exact host name, without port) and `visibility` (`public` or `private`) are required, any other key is kept as metadata.
+- Each entry is validated: `host` (an exact host name, without port) and `exposure` (`external` or `internal`) are required, any other key is kept as metadata.
 - ERB and a `shared:` section work as in any `config_for` file. `shared:` is deep merged into the environment's section, so an environment that lists its own `hosts` replaces those of `shared:` rather than adding to them.
 - The file is loaded as soon as the application class is defined, so the class body and the environment files can already read it. An invalid file fails the boot with a `GetaroundUtils::ExposedHosts::Configuration::Error`.
 
 ```ruby
 exposed = Rails.configuration.exposed_hosts # a GetaroundUtils::ExposedHosts::Configuration
-exposed.hosts                          # every declared host, once, in the file's order
-exposed.entries                        # every entry, in the file's order, with its metadata
-exposed.entries(:private)              # the entries of a visibility, :public or :private, in the file's order
-exposed.entries(group: :legacy)        # the entries matching the metadata, whatever their visibility
-exposed.entry(:public)                 # the first entry of a visibility
-exposed.entry(:public).host            # => 'www.example.com'
-exposed.entry(:public, group: :legacy) # the first entry of the visibility matching the metadata
+exposed.hosts                            # every declared host, once, in the file's order
+exposed.entries                          # every entry, in the file's order, with its metadata
+exposed.entries(:internal)               # the entries of an exposure, :external or :internal, in the file's order
+exposed.entries(group: :legacy)          # the entries matching the metadata, whatever their exposure
+exposed.entry(:external)                 # the first entry of an exposure
+exposed.entry(:external).host            # => 'www.example.com'
+exposed.entry(:external, group: :legacy) # the first entry of the exposure matching the metadata
 
-entry = exposed.entries.first          # a GetaroundUtils::ExposedHosts::Entry
-entry.host                             # => 'app.example.com'
-entry.visibility                       # => :private
-entry.private?                         # => true
-entry.public?                          # => false
-entry.metadata                         # => {} — the other keys of the entry
-entry.to_h                             # => { host: 'app.example.com', visibility: :private } — with the metadata
-entry.match?(group: :legacy)           # => false — whether the metadata holds these keys and values
-entry.match?(host: authority)          # whether a Host header, e.g. 'APP.example.com:3000', designates this host
+entry = exposed.entries.first            # a GetaroundUtils::ExposedHosts::Entry
+entry.host                               # => 'app.example.com'
+entry.exposure                           # => :internal
+entry.internal?                          # => true
+entry.external?                          # => false
+entry.metadata                           # => {} — the other keys of the entry
+entry.to_h                               # => { host: 'app.example.com', exposure: :internal } — with the metadata
+entry.match?(group: :legacy)             # => false — whether the metadata holds these keys and values
+entry.match?(host: authority)            # whether a Host header, e.g. 'APP.example.com:3000', designates this host
 
-legacy = exposed.entries.last          # the entry of LEGACY_HOST
-legacy.metadata                        # => { group: 'legacy' }
-legacy.match?(group: :legacy)          # => true — a Symbol and a String with the same name are equal
+legacy = exposed.entries.last            # the entry of LEGACY_HOST
+legacy.metadata                          # => { group: 'legacy' }
+legacy.match?(group: :legacy)            # => true — a Symbol and a String with the same name are equal
 ```
 
-`Entry#match?` takes its criteria as keywords: a `host`, a `visibility` and metadata, e.g. `match?(host: authority, visibility: :private, group: :api)`. A criterion left out matches any entry, while a `nil` host, that of a request without a Host header, matches none. A Symbol and a String with the same name are equal, so `group: :api` matches the `group: api` of a YAML entry; other values compare strictly.
+`Entry#match?` takes its criteria as keywords: a `host`, an `exposure` and metadata, e.g. `match?(host: authority, exposure: :internal, group: :api)`. A criterion left out matches any entry, while a `nil` host, that of a request without a Host header, matches none. A Symbol and a String with the same name are equal, so `group: :api` matches the `group: api` of a YAML entry; other values compare strictly.
 
-`entries` and `entry` take a visibility and other criteria as keywords: `entries(:private, group: :api)`, `entry(:public, group: :api)`. The keywords are the criteria of `Entry#match?`: metadata, but also a `host`, e.g. `entries(host: authority)`. The visibility of `entries` is optional too: without it, it lists the entries matching the other criteria whatever their visibility, and without any criterion, every entry. `entries` also takes the visibility as a keyword, e.g. `entries(visibility: :private)`. Either way, it is `public` or `private`, as a Symbol or a String, and given once: anything else raises an `ArgumentError`. When no entry matches, both raise a `GetaroundUtils::ExposedHosts::UndeclaredHost` that names the visibility and the other criteria, e.g. `no private host matching {group: :api} is declared`.
+`entries` and `entry` take an exposure and other criteria as keywords: `entries(:internal, group: :api)`, `entry(:external, group: :api)`. The keywords are the criteria of `Entry#match?`: metadata, but also a `host`, e.g. `entries(host: authority)`. The exposure of `entries` is optional too: without it, it lists the entries matching the other criteria whatever their exposure, and without any criterion, every entry. `entries` also takes the exposure as a keyword, e.g. `entries(exposure: :internal)`. Either way, it is `external` or `internal`, as a Symbol or a String, and given once: anything else raises an `ArgumentError`. When no entry matches, both raise a `GetaroundUtils::ExposedHosts::UndeclaredHost` that names the exposure and the other criteria, e.g. `no internal host matching {group: :api} is declared`.
 
 The railtie does not touch `config.hosts`: each application adds the hosts it needs, for instance all of them:
 ```ruby
@@ -115,43 +115,43 @@ The routes DSL gets three optional helpers:
 
 - `host_constraints` restricts routes to the matching hosts: they answer nowhere else.
 - `host_defaults` generates the URLs of routes on the first matching host, without restricting where they answer.
-- `private_routes` does both on the private hosts.
+- `internal_routes` does both on the internal hosts.
 
-`host_defaults` takes the same arguments as `entry`, `host_constraints` the same as `entries`: without visibility, the routes answer on the hosts whose entry matches the other criteria, whatever their visibility, and without any criterion, on every declared host. `private_routes` only takes the other criteria: a `visibility` among them raises an `ArgumentError`.
+`host_defaults` takes the same arguments as `entry`, `host_constraints` the same as `entries`: without exposure, the routes answer on the hosts whose entry matches the other criteria, whatever their exposure, and without any criterion, on every declared host. `internal_routes` only takes the other criteria: an `exposure` among them raises an `ArgumentError`.
 
 ```ruby
 # config/routes.rb
 Rails.application.routes.draw do
-  # Only exist on the private hosts, and generate their URLs on the first of them, e.g. an admin
-  private_routes do
+  # Only exist on the internal hosts, and generate their URLs on the first of them, e.g. an admin
+  internal_routes do
     get '/admin', to: 'admin#index'
   end
 
-  # Exist on every host, and generate their URLs on the first public host,
-  # e.g. the webhooks of an application whose `default_url_options` point to its private host
-  host_defaults(:public) do
+  # Exist on every host, and generate their URLs on the first external host,
+  # e.g. the webhooks of an application whose `default_url_options` point to its internal host
+  host_defaults(:external) do
     post '/webhooks/github', to: 'webhooks#github'
   end
 
-  # Only exist on the hosts whose entry has `group: api`, public or private, and generate their URLs on the public one
+  # Only exist on the hosts whose entry has `group: api`, external or internal, and generate their URLs on the external one
   host_constraints(group: :api) do
-    host_defaults(:public, group: :api) do
+    host_defaults(:external, group: :api) do
       post '/graphql', to: 'graphql#execute'
     end
   end
 end
 ```
-- **`host_constraints` and `private_routes` limit where a route answers, they do not authorize anyone**: the Host header is chosen by the client. Every private route must still authenticate its callers.
-- `host_defaults` and `private_routes` set `params[:host]` to the host of their entry, whatever the request says. Their controllers must not use a parameter with this name.
-- The other URL options, e.g. a protocol or a port, still come from the `default_url_options` of the routes, whose host can be a declared one: `default_url_options(host: Rails.configuration.exposed_hosts.entry(:public).host)`.
-- `host_defaults` does not check that its host is one of those of `host_constraints`: make sure it is, as with `host_defaults(:public, group: :api)` inside `host_constraints(group: :api)` above, or the URLs point to a host where the routes do not answer. `private_routes` always does.
-- Inside `host_constraints` or `private_routes`, a route that takes its own constraint object or lambda, e.g. `get '/admin', to: 'admin#index', constraints: LoggedIn.new`, drops the host constraint and answers on every host: Rails replaces the constraint of the block with that of the route. Nest it in a `constraints(LoggedIn.new) do` block instead. A hash of constraints, e.g. `constraints: { subdomain: 'www' }`, adds to the host constraint.
+- **`host_constraints` and `internal_routes` limit where a route answers, they do not authorize anyone**: the Host header is chosen by the client. Every internal route must still authenticate its callers.
+- `host_defaults` and `internal_routes` set `params[:host]` to the host of their entry, whatever the request says. Their controllers must not use a parameter with this name.
+- The other URL options, e.g. a protocol or a port, still come from the `default_url_options` of the routes, whose host can be a declared one: `default_url_options(host: Rails.configuration.exposed_hosts.entry(:external).host)`.
+- `host_defaults` does not check that its host is one of those of `host_constraints`: make sure it is, as with `host_defaults(:external, group: :api)` inside `host_constraints(group: :api)` above, or the URLs point to a host where the routes do not answer. `internal_routes` always does.
+- Inside `host_constraints` or `internal_routes`, a route that takes its own constraint object or lambda, e.g. `get '/admin', to: 'admin#index', constraints: LoggedIn.new`, drops the host constraint and answers on every host: Rails replaces the constraint of the block with that of the route. Nest it in a `constraints(LoggedIn.new) do` block instead. A hash of constraints, e.g. `constraints: { subdomain: 'www' }`, adds to the host constraint.
 - Drawing any of them without a matching entry raises a `GetaroundUtils::ExposedHosts::UndeclaredHost`.
 
-`host_constraints` matches the hosts of the entries in any case and with any port. A private entry is matched against the raw Host header: it ignores `X-Forwarded-Host` and `Forwarded`, and a request without a Host header matches none. A public entry is matched against `request.host`: the forwarded host if any, else the Host header, else `SERVER_NAME`. In the router, the `ActionDispatch::Request` only reads `X-Forwarded-Host`, while a `Rack::Request` also reads `Forwarded`, before `X-Forwarded-Host`. Its `GetaroundUtils::ExposedHosts::HostConstraint` takes any Rack request, so the code that runs before the router can use it too:
+`host_constraints` matches the hosts of the entries in any case and with any port. An internal entry is matched against the raw Host header: it ignores `X-Forwarded-Host` and `Forwarded`, and a request without a Host header matches none. An external entry is matched against `request.host`: the forwarded host if any, else the Host header, else `SERVER_NAME`. In the router, the `ActionDispatch::Request` only reads `X-Forwarded-Host`, while a `Rack::Request` also reads `Forwarded`, before `X-Forwarded-Host`. Its `GetaroundUtils::ExposedHosts::HostConstraint` takes any Rack request, so the code that runs before the router can use it too:
 ```ruby
-PRIVATE_API_HOSTS = GetaroundUtils::ExposedHosts::HostConstraint.new(Rails.configuration.exposed_hosts.entries(:private, group: :api))
-PRIVATE_API_HOSTS.matches?(request) # whether the request targets a private host of the api group
+INTERNAL_API_HOSTS = GetaroundUtils::ExposedHosts::HostConstraint.new(Rails.configuration.exposed_hosts.entries(:internal, group: :api))
+INTERNAL_API_HOSTS.matches?(request) # whether the request targets an internal host of the api group
 ```
 It takes a list of entries, which matches no request when empty, and raises an `ArgumentError` for anything else.
 

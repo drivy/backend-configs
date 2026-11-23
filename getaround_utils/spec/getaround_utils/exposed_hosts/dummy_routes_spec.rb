@@ -12,10 +12,10 @@ RSpec.describe 'Routes of the dummy application', type: :request do
   context 'when generated on the API host' do
     before { post 'http://api.example.com/api' }
 
-    it 'generates the URLs of host_defaults and private_routes on the host of their entry' do
+    it 'generates the URLs of host_defaults and internal_routes on the host of their entry' do
       expect(urls).to include(
-        'public_page' => 'http://www.example.com/public',
-        'private_page' => 'http://private.example.com/private',
+        'external_page' => 'http://www.example.com/external',
+        'internal_page' => 'http://internal.example.com/internal',
         'admin_page' => 'http://admin.example.com/admin',
       )
     end
@@ -34,8 +34,8 @@ RSpec.describe 'Routes of the dummy application', type: :request do
   context 'when generated on the admin host' do
     before { get 'http://admin.example.com/admin' }
 
-    it 'generates the URL of host_defaults on the public host' do
-      expect(urls['public_page']).to eq('http://www.example.com/public')
+    it 'generates the URL of host_defaults on the external host' do
+      expect(urls['external_page']).to eq('http://www.example.com/external')
     end
 
     it 'generates the URL of host_constraints alone on the admin host, where the route does not answer' do
@@ -54,9 +54,9 @@ RSpec.describe 'Routes of the dummy application', type: :request do
   context 'when generated outside a request' do
     let(:url_helpers) { Rails.application.routes.url_helpers }
 
-    it 'generates the URLs of host_defaults and private_routes on the host of their entry' do
-      expect(url_helpers.public_page_url).to eq('http://www.example.com/public')
-      expect(url_helpers.private_page_url).to eq('http://private.example.com/private')
+    it 'generates the URLs of host_defaults and internal_routes on the host of their entry' do
+      expect(url_helpers.external_page_url).to eq('http://www.example.com/external')
+      expect(url_helpers.internal_page_url).to eq('http://internal.example.com/internal')
       expect(url_helpers.admin_page_url).to eq('http://admin.example.com/admin')
     end
 

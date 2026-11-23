@@ -4,18 +4,18 @@ module GetaroundUtils; end
 
 module GetaroundUtils::ExposedHosts; end
 
-# A host of config/exposed_hosts.yml: its visibility, and any other key of the entry as metadata.
+# A host of config/exposed_hosts.yml: its exposure, and any other key of the entry as metadata.
 class GetaroundUtils::ExposedHosts::Entry
-  attr_reader :host, :visibility, :metadata
+  attr_reader :host, :exposure, :metadata
 
   class Error < StandardError; end
 
-  VISIBILITIES = %i[public private].freeze
-  REQUIRED_KEYS = %i[host visibility].freeze
+  EXPOSURES = %i[external internal].freeze
+  REQUIRED_KEYS = %i[host exposure].freeze
   NO_ARG = Object.new.freeze
   private_constant :NO_ARG
 
-  # Builds an entry from a hash of config/exposed_hosts.yml: `host`, `visibility`, and any other key as metadata.
+  # Builds an entry from a hash of config/exposed_hosts.yml: `host`, `exposure`, and any other key as metadata.
   def self.build(raw_entry)
     raise Error, "expected a hash, got #{raw_entry.inspect}" unless raw_entry.is_a?(Hash)
 
@@ -25,12 +25,12 @@ class GetaroundUtils::ExposedHosts::Entry
     new(**raw_entry)
   end
 
-  def self.valid_visibility?(visibility)
-    (visibility.is_a?(String) || visibility.is_a?(Symbol)) && VISIBILITIES.include?(visibility.to_sym)
+  def self.valid_exposure?(exposure)
+    (exposure.is_a?(String) || exposure.is_a?(Symbol)) && EXPOSURES.include?(exposure.to_sym)
   end
 
-  def initialize(host:, visibility:, **metadata)
-    raise Error, "visibility must be public or private, got #{visibility.inspect}" unless self.class.valid_visibility?(visibility)
+  def initialize(host:, exposure:, **metadata)
+    raise Error, "exposure must be external or internal, got #{exposure.inspect}" unless self.class.valid_exposure?(exposure)
     # The rules on the host keep `@host_pattern` identical to the pattern HostAuthorization builds for the same host.
     # HostAuthorization only builds such a pattern for a String, and an empty host would match an empty Host header.
     raise Error, "host must be a non-empty string, got #{host.inspect}" unless host.is_a?(String) && !host.empty?
@@ -40,37 +40,37 @@ class GetaroundUtils::ExposedHosts::Entry
     raise Error, "host must not include a port, got #{host.inspect}" if host.include?(':')
 
     @host = host.freeze
-    @visibility = visibility.to_sym
+    @exposure = exposure.to_sym
     @metadata = metadata.freeze
     @host_pattern = /\A#{Regexp.escape(host)}(?::\d+)?\z/i
   end
 
-  # Whether the entry has the given host, visibility and metadata, e.g. `match?(visibility: :private, group: 'api')`.
+  # Whether the entry has the given host, exposure and metadata, e.g. `match?(exposure: :internal, group: 'api')`.
   # A criterion left out matches any entry, while a nil host, that of a request without a Host header, matches none,
-  # and neither does a visibility that is not public or private.
-  def match?(host: NO_ARG, visibility: NO_ARG, **metadata)
-    return false unless visibility == NO_ARG || match_visibility?(visibility)
+  # and neither does an exposure that is not external or internal.
+  def match?(host: NO_ARG, exposure: NO_ARG, **metadata)
+    return false unless exposure == NO_ARG || match_exposure?(exposure)
     return false unless host == NO_ARG || match_host?(host)
 
     match_metadata?(**metadata)
   end
 
-  def public?
-    visibility == :public
+  def external?
+    exposure == :external
   end
 
-  def private?
-    visibility == :private
+  def internal?
+    exposure == :internal
   end
 
   def to_h
-    { host:, visibility:, **metadata }
+    { host:, exposure:, **metadata }
   end
 
   private
 
-  def match_visibility?(visibility)
-    comparable(self.visibility) == comparable(visibility)
+  def match_exposure?(exposure)
+    comparable(self.exposure) == comparable(exposure)
   end
 
   # Whether a Host header designates this host, in any case and with any port, e.g. `match_host?('WWW.example.com:3000')`.

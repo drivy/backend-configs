@@ -9,16 +9,16 @@ RSpec.describe GetaroundUtils::Railties::ExposedHosts do
 
   it 'loads the entries of the environment, evaluating the ERB with the ENV set before the application class' do
     expect(config.exposed_hosts.entries.map(&:to_h)).to eq([
-      { host: 'private.example.com', visibility: :private },
-      { host: 'admin.example.com', visibility: :private, group: 'internal', port: 42 },
-      { host: 'www.example.com', visibility: :public },
-      { host: 'api.example.com', visibility: :public, group: :api },
+      { host: 'internal.example.com', exposure: :internal },
+      { host: 'admin.example.com', exposure: :internal, group: 'backoffice', port: 42 },
+      { host: 'www.example.com', exposure: :external },
+      { host: 'api.example.com', exposure: :external, group: :api },
     ])
   end
 
   it 'loads them before the environment files' do
-    expect(config.x.private_host).to eq('private.example.com')
-    expect(config.x.public_host).to eq('www.example.com')
+    expect(config.x.internal_host).to eq('internal.example.com')
+    expect(config.x.external_host).to eq('www.example.com')
   end
 
   it 'leaves config.hosts to the application, which starts empty in test' do

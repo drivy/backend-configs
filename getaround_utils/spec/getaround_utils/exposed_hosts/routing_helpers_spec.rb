@@ -18,10 +18,10 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
   describe '#host_constraints' do
     let(:entries) do
       [
-        { host: 'admin.example.com', visibility: 'private', group: 'backoffice' },
-        { host: 'api-internal.example.com', visibility: 'private', group: 'api' },
-        { host: 'www.example.com', visibility: 'public', group: 'web' },
-        { host: 'api.example.com', visibility: 'public', group: 'api' },
+        { host: 'admin.example.com', exposure: 'internal', group: 'backoffice' },
+        { host: 'api-internal.example.com', exposure: 'internal', group: 'api' },
+        { host: 'www.example.com', exposure: 'external', group: 'web' },
+        { host: 'api.example.com', exposure: 'external', group: 'api' },
       ]
     end
 
@@ -48,12 +48,12 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
-    it 'serves the route on another host forwarded for a public host matching it' do
+    it 'serves the route on another host forwarded for an external host matching it' do
       post 'http://other.example.com/api', headers: { 'X-Forwarded-Host' => 'api.example.com' }
       expect(response).to have_http_status(:ok)
     end
 
-    it 'does not serve the route on a public host matching it forwarded for another host' do
+    it 'does not serve the route on an external host matching it forwarded for another host' do
       post 'http://api.example.com/api', headers: { 'X-Forwarded-Host' => 'other.example.com' }
       expect(response).to have_http_status(:not_found)
     end
@@ -63,25 +63,25 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
       expect(response.parsed_body['host']).to eq('other.example.com')
     end
 
-    context 'with a visibility' do
-      it 'serves the route on the hosts of the visibility only' do
-        expect(served_hosts(draw_constrained_route(:private))).to eq(%w[admin.example.com api-internal.example.com])
+    context 'with an exposure' do
+      it 'serves the route on the hosts of the exposure only' do
+        expect(served_hosts(draw_constrained_route(:internal))).to eq(%w[admin.example.com api-internal.example.com])
       end
     end
 
-    context 'with a visibility and metadata' do
-      it 'serves the route on the hosts of the visibility whose entry matches the metadata only' do
-        expect(served_hosts(draw_constrained_route(:public, group: :api))).to eq(%w[api.example.com])
+    context 'with an exposure and metadata' do
+      it 'serves the route on the hosts of the exposure whose entry matches the metadata only' do
+        expect(served_hosts(draw_constrained_route(:external, group: :api))).to eq(%w[api.example.com])
       end
     end
 
-    context 'without visibility, with metadata' do
+    context 'without exposure, with metadata' do
       it 'serves the route on every declared host whose entry matches the metadata' do
         expect(served_hosts(draw_constrained_route(group: 'api'))).to eq(%w[api-internal.example.com api.example.com])
       end
     end
 
-    context 'without visibility nor metadata' do
+    context 'without exposure nor metadata' do
       it 'serves the route on every declared host' do
         expect(served_hosts(draw_constrained_route)).to eq(entries.pluck(:host))
       end
@@ -89,9 +89,9 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
 
     context 'without matching entry' do
       it 'fails to draw the routes' do
-        expect { draw_constrained_route(:private, group: 'web') }.to raise_error(
+        expect { draw_constrained_route(:internal, group: 'web') }.to raise_error(
           GetaroundUtils::ExposedHosts::UndeclaredHost,
-          'no private host matching {group: "web"} is declared',
+          'no internal host matching {group: "web"} is declared',
         )
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
     it 'generates the URLs on one of its hosts when combined with host_defaults' do
       route_set = draw_routes_with(entries) do
         host_constraints(group: 'api') do
-          host_defaults(:public, group: 'api') do
+          host_defaults(:external, group: 'api') do
             get '/constrained', to: ->(_env) { [200, {}, []] }, as: :constrained
           end
         end
@@ -109,127 +109,127 @@ RSpec.describe GetaroundUtils::ExposedHosts::RoutingHelpers, type: :request do
     end
 
     it 'leaves the host of the URLs to the default URL options' do
-      route_set = draw_constrained_route(:private)
+      route_set = draw_constrained_route(:internal)
       route_set.default_url_options = { host: 'www.example.com' }
       expect(route_set.url_helpers.constrained_url).to eq('http://www.example.com/constrained')
     end
   end
 
-  describe '#private_routes' do
-    %w[private.example.com admin.example.com PRIVATE.Example.com:3000].each do |host|
+  describe '#internal_routes' do
+    %w[internal.example.com admin.example.com INTERNAL.Example.com:3000].each do |host|
       it "serves the route on #{host}" do
-        get "http://#{host}/private"
+        get "http://#{host}/internal"
         expect(response).to have_http_status(:ok)
       end
     end
 
-    it 'does not serve the route on a public host' do
-      get 'http://www.example.com/private'
+    it 'does not serve the route on an external host' do
+      get 'http://www.example.com/internal'
       expect(response).to have_http_status(:not_found)
     end
 
-    it 'does not serve the route on a public host forwarded for a private one' do
-      get 'http://www.example.com/private', headers: { 'X-Forwarded-Host' => 'private.example.com' }
+    it 'does not serve the route on an external host forwarded for an internal one' do
+      get 'http://www.example.com/internal', headers: { 'X-Forwarded-Host' => 'internal.example.com' }
       expect(response).to have_http_status(:not_found)
     end
 
-    it 'generates the URLs on the first private host' do
-      expect(url_helpers.private_page_url).to eq('http://private.example.com/private')
+    it 'generates the URLs on the first internal host' do
+      expect(url_helpers.internal_page_url).to eq('http://internal.example.com/internal')
     end
 
     it 'sets params[:host] to the declared host, whatever the host or the query string of the request says' do
-      # admin.example.com is a private host, but not the first one, to which private_routes sets params[:host].
-      get 'http://admin.example.com/private?host=evil.example.com'
-      expect(response.parsed_body['host']).to eq(Rails.application.config.exposed_hosts.entry(:private).host)
+      # admin.example.com is an internal host, but not the first one, to which internal_routes sets params[:host].
+      get 'http://admin.example.com/internal?host=evil.example.com'
+      expect(response.parsed_body['host']).to eq(Rails.application.config.exposed_hosts.entry(:internal).host)
     end
 
     context 'with metadata, given as a Symbol' do
-      it 'serves the route on the private hosts matching it' do
+      it 'serves the route on the internal hosts matching it' do
         get 'http://admin.example.com/admin'
         expect(response).to have_http_status(:ok)
       end
 
-      it 'does not serve the route on the other private hosts' do
-        get 'http://private.example.com/admin'
+      it 'does not serve the route on the other internal hosts' do
+        get 'http://internal.example.com/admin'
         expect(response).to have_http_status(:not_found)
       end
 
-      it 'generates the URLs on the first private host matching it' do
+      it 'generates the URLs on the first internal host matching it' do
         expect(url_helpers.admin_page_url).to eq('http://admin.example.com/admin')
       end
     end
 
-    context 'without private entry' do
+    context 'without internal entry' do
       it 'fails to draw the routes' do
         expect {
-          draw_routes_with([{ host: 'www.example.com', visibility: 'public' }]) do
-            private_routes { get '/private', to: ->(_env) { [200, {}, []] } }
+          draw_routes_with([{ host: 'www.example.com', exposure: 'external' }]) do
+            internal_routes { get '/internal', to: ->(_env) { [200, {}, []] } }
           end
-        }.to raise_error(GetaroundUtils::ExposedHosts::UndeclaredHost, 'no private host is declared')
+        }.to raise_error(GetaroundUtils::ExposedHosts::UndeclaredHost, 'no internal host is declared')
       end
     end
 
-    context 'with a visibility among the criteria' do
+    context 'with an exposure among the criteria' do
       it 'fails to draw the routes' do
         expect {
-          draw_routes_with([{ host: 'www.example.com', visibility: 'public' }]) do
-            private_routes(visibility: :public) { get '/private', to: ->(_env) { [200, {}, []] } }
+          draw_routes_with([{ host: 'www.example.com', exposure: 'external' }]) do
+            internal_routes(exposure: :external) { get '/internal', to: ->(_env) { [200, {}, []] } }
           end
-        }.to raise_error(ArgumentError, 'visibility must be given once, got :private and visibility: :public')
+        }.to raise_error(ArgumentError, 'exposure must be given once, got :internal and exposure: :external')
       end
     end
   end
 
   describe '#host_defaults' do
-    %w[www.example.com private.example.com].each do |host|
+    %w[www.example.com internal.example.com].each do |host|
       it "serves the route on #{host}" do
-        get "http://#{host}/public"
+        get "http://#{host}/external"
         expect(response).to have_http_status(:ok)
       end
     end
 
-    it 'generates the URLs on the first host of the visibility' do
-      expect(url_helpers.public_page_url).to eq('http://www.example.com/public')
+    it 'generates the URLs on the first host of the exposure' do
+      expect(url_helpers.external_page_url).to eq('http://www.example.com/external')
     end
 
     it 'leaves the other URL options to the default URL options of the routes' do
-      route_set = draw_routes_with([{ host: 'www.example.com', visibility: 'public' }]) do
-        host_defaults(:public) { get '/public', to: ->(_env) { [200, {}, []] }, as: :public }
+      route_set = draw_routes_with([{ host: 'www.example.com', exposure: 'external' }]) do
+        host_defaults(:external) { get '/external', to: ->(_env) { [200, {}, []] }, as: :external }
       end
       route_set.default_url_options = { protocol: 'https', host: 'other.example.com', port: 3000 }
-      expect(route_set.url_helpers.public_url).to eq('https://www.example.com:3000/public')
+      expect(route_set.url_helpers.external_url).to eq('https://www.example.com:3000/external')
     end
 
     it 'sets params[:host] to the declared host, whatever the host or the query string of the request says' do
-      get 'http://private.example.com/public?host=evil.example.com'
+      get 'http://internal.example.com/external?host=evil.example.com'
       expect(response.parsed_body['host']).to eq('www.example.com')
     end
 
     context 'with metadata' do
       let(:entries) do
         [
-          { host: 'admin.example.com', visibility: 'private', group: 'backoffice' },
-          { host: 'api-internal.example.com', visibility: 'private', group: 'api' },
-          { host: 'www.example.com', visibility: 'public', group: 'web' },
-          { host: 'api.example.com', visibility: 'public', group: 'api' },
+          { host: 'admin.example.com', exposure: 'internal', group: 'backoffice' },
+          { host: 'api-internal.example.com', exposure: 'internal', group: 'api' },
+          { host: 'www.example.com', exposure: 'external', group: 'web' },
+          { host: 'api.example.com', exposure: 'external', group: 'api' },
         ]
       end
 
-      it 'generates the URLs on the first host of the visibility matching it' do
+      it 'generates the URLs on the first host of the exposure matching it' do
         route_set = draw_routes_with(entries) do
-          host_defaults(:public, group: 'api') { get '/status', to: ->(_env) { [200, {}, []] }, as: :status }
+          host_defaults(:external, group: 'api') { get '/status', to: ->(_env) { [200, {}, []] }, as: :status }
         end
         expect(route_set.url_helpers.status_url).to eq('http://api.example.com/status')
       end
     end
 
-    context 'without entry of the visibility' do
+    context 'without entry of the exposure' do
       it 'fails to draw the routes' do
         expect {
-          draw_routes_with([{ host: 'private.example.com', visibility: 'private' }]) do
-            host_defaults(:public) { get '/public', to: ->(_env) { [200, {}, []] } }
+          draw_routes_with([{ host: 'internal.example.com', exposure: 'internal' }]) do
+            host_defaults(:external) { get '/external', to: ->(_env) { [200, {}, []] } }
           end
-        }.to raise_error(GetaroundUtils::ExposedHosts::UndeclaredHost, 'no public host is declared')
+        }.to raise_error(GetaroundUtils::ExposedHosts::UndeclaredHost, 'no external host is declared')
       end
     end
   end

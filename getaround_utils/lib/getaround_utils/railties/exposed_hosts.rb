@@ -14,7 +14,7 @@ class GetaroundUtils::Railties::ExposedHosts < Rails::Railtie
     app.config.exposed_hosts = GetaroundUtils::ExposedHosts::Configuration.new(app.config_for(:exposed_hosts))
   end
 
-  # Runs before the routes are drawn, so that they can use `private_routes`, `host_defaults` and `host_constraints`.
+  # Runs before the routes are drawn, so that they can use `internal_routes`, `host_defaults` and `host_constraints`.
   initializer 'getaround_utils.exposed_hosts.routing_helpers' do
     ActionDispatch::Routing::Mapper.include(GetaroundUtils::ExposedHosts::RoutingHelpers)
   end

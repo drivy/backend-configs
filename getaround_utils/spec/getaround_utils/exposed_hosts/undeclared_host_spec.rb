@@ -8,9 +8,9 @@ RSpec.describe GetaroundUtils::ExposedHosts::UndeclaredHost do
     expect(described_class.new.message).to eq('no host is declared')
   end
 
-  context 'with a visibility' do
-    it 'names the visibility' do
-      expect(described_class.new(visibility: :internal).message).to eq('no internal host is declared')
+  context 'with an exposure' do
+    it 'names the exposure' do
+      expect(described_class.new(exposure: :internal).message).to eq('no internal host is declared')
     end
   end
 
@@ -20,10 +20,10 @@ RSpec.describe GetaroundUtils::ExposedHosts::UndeclaredHost do
     end
   end
 
-  context 'with a visibility and metadata' do
+  context 'with an exposure and metadata' do
     it 'names both' do
-      expect(described_class.new(visibility: :private, group: 'api').message)
-        .to eq('no private host matching {group: "api"} is declared')
+      expect(described_class.new(exposure: :internal, group: 'api').message)
+        .to eq('no internal host matching {group: "api"} is declared')
     end
   end
 end

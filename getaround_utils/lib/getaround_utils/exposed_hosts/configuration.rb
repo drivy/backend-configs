@@ -28,23 +28,23 @@ class GetaroundUtils::ExposedHosts::Configuration
     @hosts = @entries.map(&:host).uniq.freeze
   end
 
-  # The entries that have the visibility and match the other criteria, in the file's order, e.g.
-  # `entries(:private, group: 'api')`. Without visibility, whatever their visibility, and without any criterion, every
+  # The entries that have the exposure and match the other criteria, in the file's order, e.g.
+  # `entries(:internal, group: 'api')`. Without exposure, whatever their exposure, and without any criterion, every
   # entry. Raises an UndeclaredHost when there is none.
   # The keywords are the criteria of `Entry#match?`: metadata, but also a `host`, e.g. `entries(host: authority)`, or
-  # the visibility, e.g. `entries(visibility: :private)`. The visibility is public or private, as a Symbol or a String,
+  # the exposure, e.g. `entries(exposure: :internal)`. The exposure is external or internal, as a Symbol or a String,
   # given as an argument or as a keyword but not both: anything else raises an ArgumentError.
-  def entries(visibility = NO_ARG, **)
-    criteria = criteria_for(visibility, **)
+  def entries(exposure = NO_ARG, **)
+    criteria = criteria_for(exposure, **)
     @entries.select { |entry| entry.match?(**criteria) }.freeze.tap do |entries|
       undeclared_host!(**criteria) if entries.empty?
     end
   end
 
-  # The first entry that has the visibility and matches the other criteria, e.g. `entry(:public, group: 'api')`. It
-  # takes the arguments of `entries`, and raises the same errors, but requires the visibility as an argument.
-  def entry(visibility, **)
-    criteria = criteria_for(visibility, **)
+  # The first entry that has the exposure and matches the other criteria, e.g. `entry(:external, group: 'api')`. It
+  # takes the arguments of `entries`, and raises the same errors, but requires the exposure as an argument.
+  def entry(exposure, **)
+    criteria = criteria_for(exposure, **)
     @entries.find { |entry| entry.match?(**criteria) } || undeclared_host!(**criteria)
   end
 
@@ -60,14 +60,14 @@ class GetaroundUtils::ExposedHosts::Configuration
     end
   end
 
-  def criteria_for(visibility, **kwargs)
-    if visibility != NO_ARG && kwargs.key?(:visibility)
-      raise ArgumentError, "visibility must be given once, got #{visibility.inspect} and visibility: #{kwargs[:visibility].inspect}"
+  def criteria_for(exposure, **kwargs)
+    if exposure != NO_ARG && kwargs.key?(:exposure)
+      raise ArgumentError, "exposure must be given once, got #{exposure.inspect} and exposure: #{kwargs[:exposure].inspect}"
     end
 
-    criteria = visibility == NO_ARG ? kwargs : kwargs.merge(visibility:)
-    if criteria.key?(:visibility) && !GetaroundUtils::ExposedHosts::Entry.valid_visibility?(criteria[:visibility])
-      raise ArgumentError, "visibility must be public or private, got #{criteria[:visibility].inspect}"
+    criteria = exposure == NO_ARG ? kwargs : kwargs.merge(exposure:)
+    if criteria.key?(:exposure) && !GetaroundUtils::ExposedHosts::Entry.valid_exposure?(criteria[:exposure])
+      raise ArgumentError, "exposure must be external or internal, got #{criteria[:exposure].inspect}"
     end
 
     criteria
