@@ -1,4 +1,4 @@
-## Unreleased
+## [0.4.0] 2026-11-23
 
 ### Breaking Changes
 
@@ -6,7 +6,7 @@
 
 ### Added
 
-- `GetaroundUtils::Utils::HealthCheckFile#refresh`: update the file modification time, without recreating it
+- `GetaroundUtils::Utils::HealthCheckFile#refresh`: update the file modification time, without recreating it ([#506](https://github.com/drivy/backend-configs/pull/506))
     ```ruby
     Sidekiq.configure_server do |config|
       config.on(:beat) { SIDEKIQ_HEALTH_FILE.refresh }
@@ -32,6 +32,11 @@
     host_defaults(:external) { post '/webhooks/github', to: 'webhooks#github' }
     host_constraints(:external) { get '/signup', to: 'signups#new' }
     ```
+
+### Changed
+
+- Update Ruby to 4.0.6
+- Update dependencies
 
 ## [0.3.5] 2026-07-07
 
