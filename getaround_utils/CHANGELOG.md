@@ -12,6 +12,26 @@
       config.on(:beat) { SIDEKIQ_HEALTH_FILE.refresh }
     end
     ```
+- `GetaroundUtils::Railties::ExposedHosts`: declares the external and internal hosts of an application and provides the `internal_routes`, `host_defaults` and `host_constraints` routing helpers ([#492](https://github.com/drivy/backend-configs/pull/492))
+    ```ruby
+    # config/application.rb
+    require 'getaround_utils/railties/exposed_hosts'
+    # ...
+    config.hosts += config.exposed_hosts.hosts
+    ```
+    ```yaml
+    # config/exposed_hosts.yml
+    production:
+      hosts:
+        - { host: app.example.com, exposure: internal }
+        - { host: www.example.com, exposure: external }
+    ```
+    ```ruby
+    # config/routes.rb
+    internal_routes { get '/admin', to: 'admin#index' }
+    host_defaults(:external) { post '/webhooks/github', to: 'webhooks#github' }
+    host_constraints(:external) { get '/signup', to: 'signups#new' }
+    ```
 
 ## [0.3.5] 2026-07-07
 

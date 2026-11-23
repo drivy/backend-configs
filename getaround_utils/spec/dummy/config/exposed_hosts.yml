@@ -1,0 +1,8 @@
+test:
+  hosts:
+    - { host: <%= ENV.fetch('DUMMY_INTERNAL_HOST') %>, exposure: internal }
+    - { host: admin.example.com, exposure: internal, group: backoffice, port: 42 }
+    - { host: www.example.com, exposure: external }
+    - host: api.example.com
+      exposure: :external
+      group: :api
